@@ -62,7 +62,10 @@
         
         [self assetsGroups];
         
-        [self loadAssetsGroups];
+        // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+        if (AN_SYSTEM_VERSION >= 6.f) {
+            [self loadAssetsGroups];
+        }
     }
     
     return self;
@@ -93,8 +96,12 @@
     if (self.imagePickerController.shouldChangeStatusBarStyle) {
         self.wantsFullScreenLayout = YES;
     }
-    
     self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Albums", nil, [NSBundle mainBundle], @"Albums", nil);
+    
+    // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+    if (AN_SYSTEM_VERSION < 6.f) {
+        [self loadAssetsGroups];
+    }
     
     // Setup Notifications
     [self registerForNotifications];
