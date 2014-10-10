@@ -192,7 +192,9 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *view = [[UIView alloc] init];
-    view.backgroundColor = [UIColor whiteColor];
+    // modified by springox(20141010)
+    //view.backgroundColor = [UIColor whiteColor];
+    view.backgroundColor = [UIColor clearColor];
     return view;
 }
 
