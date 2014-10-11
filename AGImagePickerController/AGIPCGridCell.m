@@ -76,8 +76,11 @@
         self.imagePickerController = imagePickerController;
 		self.items = items;
         
-        UIView *emptyView = [[UIView alloc] init];
-        self.backgroundView = emptyView;
+        // modified by springox(20141012)
+        //UIView *emptyView = [[UIView alloc] init];
+        //self.backgroundView = emptyView;
+        self.contentView.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor clearColor];
 	}
 	
 	return self;
