@@ -22,7 +22,8 @@
 - (void)agGridItem:(AGIPCGridItem *)gridItem didChangeSelectionState:(NSNumber *)selected;
 - (void)agGridItem:(AGIPCGridItem *)gridItem didChangeNumberOfSelections:(NSNumber *)numberOfSelections;
 - (BOOL)agGridItemCanSelect:(AGIPCGridItem *)gridItem;
-
+// add by springox(20140520)
+- (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem;
 @end
 
 @interface AGIPCGridItem : UIView
