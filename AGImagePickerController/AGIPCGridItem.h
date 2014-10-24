@@ -42,7 +42,7 @@
 
 - (void)loadImageFromAsset;
 
-- (void)tap;
+- (void)tap:(id)sender;
 
 + (NSUInteger)numberOfSelections;
 

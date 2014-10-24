@@ -159,7 +159,7 @@ static NSUInteger numberOfSelectedGridItems = 0;
         
         [self addSubview:self.checkmarkImageView];
         
-        // 多增加对打钩的tap手势响应，tencent:jiachunke(20140520)
+        // 多增加对打钩的tap手势响应，springox(20140520)
         [self.checkmarkImageView addTarget:self action:@selector(tapCheckMark) forControlEvents:UIControlEventTouchUpInside];
         
         self.asset = asset;

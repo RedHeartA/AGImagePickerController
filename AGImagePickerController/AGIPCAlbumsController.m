@@ -63,7 +63,7 @@
         [self assetsGroups];
         
         // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-        if (AN_SYSTEM_VERSION >= 6.f) {
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.f) {
             [self loadAssetsGroups];
         }
     }
@@ -92,7 +92,7 @@
     self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Albums", nil, [NSBundle mainBundle], @"Albums", nil);
     
     // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-    if (AN_SYSTEM_VERSION < 6.f) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.f) {
         [self loadAssetsGroups];
     }
     
@@ -259,10 +259,7 @@
                 [self.imagePickerController performSelector:@selector(didFail:) withObject:error];
             };	
             
-            [[AGImagePickerController defaultAssetsLibrary] enumerateGroupsWithTypes:ALAssetsGroupAll
-                                   usingBlock:assetGroupEnumerator 
-                                 failureBlock:assetGroupEnumberatorFailure];
-            
+            [[AGImagePickerController defaultAssetsLibrary] enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
         }
         
     });

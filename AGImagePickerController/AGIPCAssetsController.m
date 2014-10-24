@@ -16,6 +16,8 @@
 #import "AGIPCGridCell.h"
 #import "AGIPCToolbarItem.h"
 
+#import "AGImagePreviewController.h"
+
 @interface AGIPCAssetsController ()
 {
     ALAssetsGroup *_assetsGroup;
@@ -447,6 +449,18 @@
         else
             return YES;
     }
+}
+
+// add by springox(20141023)
+- (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem
+{
+    ALAsset *asset = gridItem.asset;
+    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
+    AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
+    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self.navigationController presentViewController:preController animated:YES completion:^{
+        // do nothing
+    }];
 }
 
 #pragma mark - Notifications
