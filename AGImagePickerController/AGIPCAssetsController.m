@@ -269,6 +269,14 @@
     [self reloadData];
 }
 
+// add by springox(20141024)
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self reloadData];
+}
+
 #pragma mark - Private
 
 - (void)setupToolbarItems

@@ -36,6 +36,7 @@
     }
     if (nil == _scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _scrollView.bounces = NO;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
         [_scrollView addGestureRecognizer:tapGesture];
@@ -49,12 +50,27 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    [self layoutViews];
+}
+
 - (void)layoutViews
 {
     CGFloat width = self.view.bounds.size.width;
     CGFloat height = self.view.bounds.size.height;
-    CGFloat tWidth = height*_image.size.width/_image.size.height;
-    CGFloat tHeight = width*_image.size.height/_image.size.width;
+    if (UIInterfaceOrientationLandscapeLeft == self.interfaceOrientation ||
+        UIInterfaceOrientationLandscapeRight == self.interfaceOrientation) {
+        if (width < height) {
+            CGFloat temp = width;
+            width = height;
+            height = temp;
+        }
+    }
+    CGFloat tWidth = ceilf(height*_image.size.width/_image.size.height);
+    CGFloat tHeight = ceilf(width*_image.size.height/_image.size.width);
     if (tWidth < width) {
         height = tHeight;
     } else {
