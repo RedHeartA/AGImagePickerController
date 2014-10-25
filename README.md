@@ -2,7 +2,8 @@
 
 AGImagePickerController is a image picker controller that allows you to select multiple photos and can be used for all iOS devices.
 
-![Screenshot](https://dl.dropboxusercontent.com/u/59801943/Screenshots/AGImagePickerController.jpg)
+![Screenshot](https://dl.dropboxusercontent.com/u/59801943/Screenshots/AGImagePickerController-1.png)
+![Screenshot](https://dl.dropboxusercontent.com/u/59801943/Screenshots/AGImagePickerController-2.png)
 
 ## Installation
 
