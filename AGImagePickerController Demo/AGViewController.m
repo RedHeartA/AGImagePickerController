@@ -141,13 +141,16 @@
     if (deviceType == AGDeviceTypeiPad)
     {
         if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
-            return 7;
+            return 11;
         else
-            return 6;
+            return 8;
     } else {
-        if (UIInterfaceOrientationIsLandscape(interfaceOrientation))
-            return 5;
-        else
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+            if (480 == self.view.bounds.size.width) {
+                return 6;
+            }
+            return 7;
+        } else
             return 4;
     }
 }
