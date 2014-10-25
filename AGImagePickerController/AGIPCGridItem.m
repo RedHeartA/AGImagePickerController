@@ -154,8 +154,7 @@ static NSUInteger numberOfSelectedGridItems = 0;
         //[self addSubview:self.selectionView];
         
         //self.checkmarkImageView = [[UIImageView alloc] initWithFrame:checkmarkFrame];
-        self.checkmarkImageView = [UIButton buttonWithType:UIButtonTypeCustom];
-        self.checkmarkImageView.frame = checkmarkFrame;
+        self.checkmarkImageView = [[UIButton alloc] initWithFrame:checkmarkFrame];
         
         [self addSubview:self.checkmarkImageView];
         
