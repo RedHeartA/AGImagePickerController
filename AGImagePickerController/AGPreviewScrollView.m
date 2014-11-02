@@ -76,25 +76,25 @@
     
     // preload before image views
     NSInteger index = (NSInteger)_currentIndex;
-    NSInteger i = index-1;
-    while (0 <= i) {
+    NSInteger i = 0;
+    while (index > i && 0 <= i) {
         if (index-2 <= i) {
             [self hangUpImageViewAtIndex:i];
         } else {
             [self takeOffImageViewAtIndex:i];
         }
-        i--;
+        i++;
     }
     
     // preload after image views
-    NSInteger j = index+1;
-    while (_imageNumber > j) {
+    NSInteger j = _imageNumber-1;
+    while (index < j && _imageNumber-1 >= j) {
         if (index+2 >= j) {
             [self hangUpImageViewAtIndex:j];
         } else {
             [self takeOffImageViewAtIndex:j];
         }
-        j++;
+        j--;
     }
 }
 
