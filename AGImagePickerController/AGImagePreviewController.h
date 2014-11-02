@@ -12,7 +12,7 @@
 
 @interface AGImagePreviewController : UIViewController
 
-@property (ag_weak, readonly) UIImage *image;
+@property (nonatomic, strong, readonly) UIImage *image;
 
 - (id)initWithImage:(UIImage *)image;
 

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		545FCB1E1A04849F004F4A87 /* AGAssetsPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */; };
+		545FCB211A04D69E004F4A87 /* AGPreviewScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */; };
+		545FCB221A067775004F4A87 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1E332C14ED167800F6A6A2 /* CoreGraphics.framework */; };
 		54628BD619FAE04E00CBDE0C /* AGImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */; };
 		54A1E5551882A31E00D556FD /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54A1E5541882A31E00D556FD /* CoreLocation.framework */; };
 		FE1E332914ED167800F6A6A2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1E332814ED167800F6A6A2 /* UIKit.framework */; };
@@ -35,6 +38,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		545FCB1C1A04849F004F4A87 /* AGAssetsPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGAssetsPreviewController.h; sourceTree = "<group>"; };
+		545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGAssetsPreviewController.m; sourceTree = "<group>"; };
+		545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGPreviewScrollView.h; sourceTree = "<group>"; };
+		545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGPreviewScrollView.m; sourceTree = "<group>"; };
 		54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGImagePreviewController.h; sourceTree = "<group>"; };
 		54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGImagePreviewController.m; sourceTree = "<group>"; };
 		54A1E5541882A31E00D556FD /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
@@ -83,6 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				545FCB221A067775004F4A87 /* CoreGraphics.framework in Frameworks */,
 				54A1E5551882A31E00D556FD /* CoreLocation.framework in Frameworks */,
 				FEDAA95516C2F3D600234FF0 /* AssetsLibrary.framework in Frameworks */,
 				FE1E332914ED167800F6A6A2 /* UIKit.framework in Frameworks */,
@@ -156,18 +164,22 @@
 		FEA599C714ED1A8C0057FF9C /* AGImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
+				FE6E796014FCDC8A006612F0 /* AGImagePickerControllerDefines.h */,
 				FE4DE10216C267400075E499 /* AGImagePickerController+Helper.h */,
 				FE4DE10316C267410075E499 /* AGImagePickerController+Helper.m */,
 				FEDAA95616C3089600234FF0 /* AGImagePickerController.bundle */,
 				FEA599C914ED1C500057FF9C /* AGImagePickerController.h */,
 				FEA599CA14ED1C500057FF9C /* AGImagePickerController.m */,
-				FE6E796014FCDC8A006612F0 /* AGImagePickerControllerDefines.h */,
 				FEA599E614ED38ED0057FF9C /* AGIPCAlbumsController.h */,
 				FEA599E714ED38ED0057FF9C /* AGIPCAlbumsController.m */,
 				FE3BAF8614EE80E7001BF3EC /* AGIPCAssetsController.h */,
 				FE3BAF8714EE80E7001BF3EC /* AGIPCAssetsController.m */,
+				545FCB1C1A04849F004F4A87 /* AGAssetsPreviewController.h */,
+				545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */,
 				54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */,
 				54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */,
+				545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */,
+				545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */,
 				FECDC8FF14EDB9C30038006D /* AGIPCGridCell.h */,
 				FECDC90014EDB9C30038006D /* AGIPCGridCell.m */,
 				FECDC90314EDBB690038006D /* AGIPCGridItem.h */,
@@ -260,7 +272,9 @@
 				FECDC90514EDBB690038006D /* AGIPCGridItem.m in Sources */,
 				FE3BAF8814EE80E7001BF3EC /* AGIPCAssetsController.m in Sources */,
 				FE3851AF1504CF7B00A9F7F8 /* AGIPCToolbarItem.m in Sources */,
+				545FCB211A04D69E004F4A87 /* AGPreviewScrollView.m in Sources */,
 				FE465F991590B25A00C30A1D /* ALAsset+AGIPC.m in Sources */,
+				545FCB1E1A04849F004F4A87 /* AGAssetsPreviewController.m in Sources */,
 				FE4DE10416C267410075E499 /* AGImagePickerController+Helper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -33,7 +33,7 @@
 
 @property (assign) BOOL selected;
 @property (strong) ALAsset *asset;
-@property (nonatomic, ag_weak) id<AGIPCGridItemDelegate> delegate;
+@property (ag_weak) id<AGIPCGridItemDelegate> delegate;
 // change strong to weak, springox(20140422)
 @property (ag_weak) AGImagePickerController *imagePickerController;
 

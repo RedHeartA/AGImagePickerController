@@ -17,6 +17,7 @@
 #import "AGIPCToolbarItem.h"
 
 #import "AGImagePreviewController.h"
+#import "AGAssetsPreviewController.h"
 
 @interface AGIPCAssetsController ()
 {
@@ -334,15 +335,6 @@
                 
                 AGIPCGridItem *gridItem = [[AGIPCGridItem alloc] initWithImagePickerController:self.imagePickerController asset:result andDelegate:self];
                 
-                // Drawing must be exectued in main thread. springox(20131220)
-                /*
-                if (strongSelf.imagePickerController.selection != nil &&
-                    [strongSelf.imagePickerController.selection containsObject:result])
-                {
-                    gridItem.selected = YES;
-                }
-                 */
-                
                 // Descending photos, springox(20131225)
                 [strongSelf.assets addObject:gridItem];
                 //[strongSelf.assets insertObject:gridItem atIndex:0];
@@ -462,6 +454,19 @@
 // add by springox(20141023)
 - (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem
 {
+    NSMutableArray *tempArr = [NSMutableArray array];
+    for (AGIPCGridItem *item in _assets) {
+        if ([item isKindOfClass:[AGIPCGridItem class]]) {
+            [tempArr addObject:item.asset];
+        }
+    }
+    AGAssetsPreviewController *preController = [[AGAssetsPreviewController alloc] initWithAssets:tempArr targetAsset:gridItem.asset];
+    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [self.navigationController presentViewController:preController animated:YES completion:^{
+        // do nothing
+    }];
+    
+    /*
     ALAsset *asset = gridItem.asset;
     UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
     AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
@@ -469,6 +474,7 @@
     [self.navigationController presentViewController:preController animated:YES completion:^{
         // do nothing
     }];
+     */
 }
 
 #pragma mark - Notifications

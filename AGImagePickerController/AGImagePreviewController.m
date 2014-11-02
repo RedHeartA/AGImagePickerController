@@ -10,9 +10,9 @@
 
 @interface AGImagePreviewController ()
 
-@property (strong) UIImageView *imageView;
+@property (nonatomic, strong) UIImageView *imageView;
 
-@property (strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 @end
 
@@ -38,11 +38,19 @@
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
         _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _scrollView.bounces = NO;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
-        [_scrollView addGestureRecognizer:tapGesture];
+//        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
+//        [_scrollView addGestureRecognizer:tapGesture];
     }
     
     [self layoutViews];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
