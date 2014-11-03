@@ -18,6 +18,8 @@
 
 @property (assign) NSInteger currentIndex;
 
+@property (assign) NSInteger previousIndex;
+
 @end
 
 @implementation AGPreviewScrollView
@@ -64,6 +66,7 @@
         return;
     }
     
+    self.previousIndex = self.currentIndex;
     self.currentIndex = index;
     [self layoutImageViewsForCurrentIndex];
 }
@@ -74,27 +77,31 @@
         NSLog(@"preview scroll view hang up image view fail!");
     }
     
-    // preload before image views
-    NSInteger index = (NSInteger)_currentIndex;
-    NSInteger i = 0;
-    while (index > i && 0 <= i) {
-        if (index-2 <= i) {
-            [self hangUpImageViewAtIndex:i];
-        } else {
-            [self takeOffImageViewAtIndex:i];
+    NSInteger bIndex = (NSInteger)_currentIndex-2;
+    NSInteger aIndex = (NSInteger)_currentIndex+2;
+    
+    NSInteger tempIndex = (NSInteger)_previousIndex-2;
+    while ((NSInteger)_previousIndex+2 >= tempIndex) {
+        if (0 > tempIndex || (bIndex <= tempIndex && aIndex >= tempIndex)) {
+            tempIndex++;
+            continue;
         }
-        i++;
+        [self takeOffImageViewAtIndex:tempIndex];
+        tempIndex++;
+    }
+    
+    // preload before image views
+    tempIndex = (NSInteger)_currentIndex-1;
+    while (0 <= tempIndex && bIndex <= tempIndex) {
+        [self hangUpImageViewAtIndex:tempIndex];
+        tempIndex--;
     }
     
     // preload after image views
-    NSInteger j = _imageNumber-1;
-    while (index < j && _imageNumber-1 >= j) {
-        if (index+2 >= j) {
-            [self hangUpImageViewAtIndex:j];
-        } else {
-            [self takeOffImageViewAtIndex:j];
-        }
-        j--;
+    tempIndex = (NSInteger)_currentIndex+1;
+    while (0 <= tempIndex && aIndex >= tempIndex) {
+        [self hangUpImageViewAtIndex:tempIndex];
+        tempIndex++;
     }
 }
 
