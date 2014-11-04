@@ -22,6 +22,8 @@
 
 - (UIImage *)previewScrollView:(AGPreviewScrollView *)scrollView imageAtIndex:(NSUInteger)index;
 
+- (void)previewScrollView:(AGPreviewScrollView *)scrollView didScrollWithCurrentIndex:(NSUInteger)index;
+
 @end
 
 @interface AGPreviewScrollView : UIScrollView
@@ -29,5 +31,7 @@
 @property (nonatomic, ag_weak) id<AGPreviewScrollViewDelegate, NSObject> preDelegate;
 
 - (id)initWithFrame:(CGRect)frame preDelegate:(id)preDelegate;
+
+- (NSInteger)currentIndexOfImage;
 
 @end

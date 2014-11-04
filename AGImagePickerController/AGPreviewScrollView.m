@@ -60,6 +60,11 @@
     NSLog(@"preview scroll view layoutSubviews");
 }
 
+- (NSInteger)currentIndexOfImage
+{
+    return (NSInteger)_currentIndex;
+}
+
 - (void)layoutImageViewsForIndex:(NSUInteger)index
 {
     if (_currentIndex == index) {
@@ -75,6 +80,10 @@
 {
     if (![self hangUpImageViewAtIndex:_currentIndex]) {
         NSLog(@"preview scroll view hang up image view fail!");
+    }
+    
+    if ([_preDelegate respondsToSelector:@selector(previewScrollView:didScrollWithCurrentIndex:)]) {
+        [_preDelegate previewScrollView:self didScrollWithCurrentIndex:_currentIndex];
     }
     
     NSInteger bIndex = (NSInteger)_currentIndex-2;
@@ -112,6 +121,10 @@
 
 - (CGRect)viewFrameWithIndex:(NSUInteger)index
 {
+    if (UIDeviceOrientationLandscapeLeft == [UIDevice currentDevice].orientation ||
+        UIDeviceOrientationLandscapeRight == [UIDevice currentDevice].orientation) {
+        return CGRectMake(_imageSize.height*index, 0, _imageSize.height, _imageSize.width);
+    }
     return CGRectMake(_imageSize.width*index, 0, _imageSize.width, _imageSize.height);
 }
 
@@ -157,6 +170,7 @@
     }
     
     imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     return imageView;
 }
 

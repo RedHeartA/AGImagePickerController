@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		545FCB1E1A04849F004F4A87 /* AGAssetsPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */; };
+		545FCB1E1A04849F004F4A87 /* AGIPCPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 545FCB1D1A04849F004F4A87 /* AGIPCPreviewController.m */; };
 		545FCB211A04D69E004F4A87 /* AGPreviewScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */; };
 		545FCB221A067775004F4A87 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE1E332C14ED167800F6A6A2 /* CoreGraphics.framework */; };
 		54628BD619FAE04E00CBDE0C /* AGImagePreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */; };
@@ -38,8 +38,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		545FCB1C1A04849F004F4A87 /* AGAssetsPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGAssetsPreviewController.h; sourceTree = "<group>"; };
-		545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGAssetsPreviewController.m; sourceTree = "<group>"; };
+		545FCB1C1A04849F004F4A87 /* AGIPCPreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGIPCPreviewController.h; sourceTree = "<group>"; };
+		545FCB1D1A04849F004F4A87 /* AGIPCPreviewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGIPCPreviewController.m; sourceTree = "<group>"; };
 		545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGPreviewScrollView.h; sourceTree = "<group>"; };
 		545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGPreviewScrollView.m; sourceTree = "<group>"; };
 		54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGImagePreviewController.h; sourceTree = "<group>"; };
@@ -170,22 +170,22 @@
 				FEDAA95616C3089600234FF0 /* AGImagePickerController.bundle */,
 				FEA599C914ED1C500057FF9C /* AGImagePickerController.h */,
 				FEA599CA14ED1C500057FF9C /* AGImagePickerController.m */,
+				54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */,
+				54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */,
 				FEA599E614ED38ED0057FF9C /* AGIPCAlbumsController.h */,
 				FEA599E714ED38ED0057FF9C /* AGIPCAlbumsController.m */,
 				FE3BAF8614EE80E7001BF3EC /* AGIPCAssetsController.h */,
 				FE3BAF8714EE80E7001BF3EC /* AGIPCAssetsController.m */,
-				545FCB1C1A04849F004F4A87 /* AGAssetsPreviewController.h */,
-				545FCB1D1A04849F004F4A87 /* AGAssetsPreviewController.m */,
-				54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */,
-				54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */,
-				545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */,
-				545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */,
+				545FCB1C1A04849F004F4A87 /* AGIPCPreviewController.h */,
+				545FCB1D1A04849F004F4A87 /* AGIPCPreviewController.m */,
 				FECDC8FF14EDB9C30038006D /* AGIPCGridCell.h */,
 				FECDC90014EDB9C30038006D /* AGIPCGridCell.m */,
 				FECDC90314EDBB690038006D /* AGIPCGridItem.h */,
 				FECDC90414EDBB690038006D /* AGIPCGridItem.m */,
 				FE3851AD1504CF7B00A9F7F8 /* AGIPCToolbarItem.h */,
 				FE3851AE1504CF7B00A9F7F8 /* AGIPCToolbarItem.m */,
+				545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */,
+				545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */,
 				FE465F971590B25A00C30A1D /* ALAsset+AGIPC.h */,
 				FE465F981590B25A00C30A1D /* ALAsset+AGIPC.m */,
 			);
@@ -274,7 +274,7 @@
 				FE3851AF1504CF7B00A9F7F8 /* AGIPCToolbarItem.m in Sources */,
 				545FCB211A04D69E004F4A87 /* AGPreviewScrollView.m in Sources */,
 				FE465F991590B25A00C30A1D /* ALAsset+AGIPC.m in Sources */,
-				545FCB1E1A04849F004F4A87 /* AGAssetsPreviewController.m in Sources */,
+				545FCB1E1A04849F004F4A87 /* AGIPCPreviewController.m in Sources */,
 				FE4DE10416C267410075E499 /* AGImagePickerController+Helper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

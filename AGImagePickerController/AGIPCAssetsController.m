@@ -17,7 +17,7 @@
 #import "AGIPCToolbarItem.h"
 
 #import "AGImagePreviewController.h"
-#import "AGAssetsPreviewController.h"
+#import "AGIPCPreviewController.h"
 
 @interface AGIPCAssetsController ()
 {
@@ -240,6 +240,9 @@
     
     // Setup Notifications
     [self registerForNotifications];
+    
+    // add by springox(20141105)
+    [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
 }
 
 - (void)viewDidUnload
@@ -254,8 +257,9 @@
 {
     [super viewWillAppear:animated];
     
-    // Reset the number of selections
-    [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
+    // modified by springox(20141105)
+    //// Reset the number of selections
+    //[AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -441,7 +445,6 @@
         for (AGIPCGridItem *item in self.assets)
             if (item.selected)
                 item.selected = NO;
-        
         return YES;
     } else {
         if (self.imagePickerController.maximumNumberOfPhotosToBeSelected > 0)
@@ -454,27 +457,11 @@
 // add by springox(20141023)
 - (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem
 {
-    NSMutableArray *tempArr = [NSMutableArray array];
-    for (AGIPCGridItem *item in _assets) {
-        if ([item isKindOfClass:[AGIPCGridItem class]]) {
-            [tempArr addObject:item.asset];
-        }
-    }
-    AGAssetsPreviewController *preController = [[AGAssetsPreviewController alloc] initWithAssets:tempArr targetAsset:gridItem.asset];
+    AGIPCPreviewController *preController = [[AGIPCPreviewController alloc] initWithAssets:self.assets targetAsset:gridItem];
     preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self.navigationController presentViewController:preController animated:YES completion:^{
         // do nothing
     }];
-    
-    /*
-    ALAsset *asset = gridItem.asset;
-    UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
-    AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
-    preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self.navigationController presentViewController:preController animated:YES completion:^{
-        // do nothing
-    }];
-     */
 }
 
 #pragma mark - Notifications
