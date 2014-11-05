@@ -1,5 +1,5 @@
-## AGImagePickerController
-iOS应用图片选择器
+## AGImagePickerController(iOS应用图片选择器)
+
 
 AGImagePickerController is a image picker, support photos multiple choice, to support large map slipping preview, support zoom preview, support for horizontal and vertical screen, supports all iOS devices
 
@@ -12,8 +12,7 @@ AGImagePickerController是一个图片选择器，支持图片多选，支持大
 ![Screenshot](https://dl.dropboxusercontent.com/u/59801943/Screenshots/AGImagePickerController-5.png)
 
 
-### Usage
-用法
+### Usage(用法)
 
 ``` objective-c
 AGImagePickerController *imagePickerController = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error) {
@@ -47,8 +46,7 @@ AGImagePickerController *imagePickerController = [[AGImagePickerController alloc
     [imagePickerController release];
 ```
 
-## Contact
-联系
+## Contact(联系)
 
 - [GitHub](https://github.com/SpringOx)
 - [Email](jiachunke@gmail.com)
