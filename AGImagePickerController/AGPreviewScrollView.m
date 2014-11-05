@@ -34,7 +34,7 @@
         self.preDelegate = preDelegate;
         self.imageViewPool = [NSMutableArray array];
         
-        [self resetContentViews];
+        [self setContentViews];
         
         self.delegate = self;
         self.pagingEnabled = YES;
@@ -53,7 +53,7 @@
     return (NSInteger)_currentIndex;
 }
 
-- (void)resetContentViews
+- (void)setContentViews
 {
     self.imageNumber = [self.preDelegate previewScrollViewNumberOfImage:self];
     self.imageSize = [self.preDelegate previewScrollViewSizeOfImage:self];
@@ -66,6 +66,18 @@
         self.contentOffset = CGPointMake(_imageSize.width*_currentIndex, 0);
     }
     [self layoutImageViewsForCurrentIndex];
+}
+
+- (void)resetContentViews
+{
+    self.imageSize = [self.preDelegate previewScrollViewSizeOfImage:self];
+    if (0 >= _imageNumber || 0 >= _imageSize.width || 0 >= _imageSize.height) {
+        self.contentSize = CGSizeZero;
+        self.contentOffset = CGPointZero;
+    } else {
+        self.contentSize = CGSizeMake(_imageSize.width*_imageNumber, _imageSize.height);
+        self.contentOffset = CGPointMake(_imageSize.width*_currentIndex, 0);
+    }
     
     NSInteger mixIndex = _currentIndex-PRELOAD_DISTANCE;
     if (0 > mixIndex) { mixIndex = 0; }
