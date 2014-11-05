@@ -34,4 +34,6 @@
 
 - (NSInteger)currentIndexOfImage;
 
+- (void)resetContentViews;
+
 @end

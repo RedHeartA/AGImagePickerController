@@ -235,8 +235,9 @@
     doneButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem = doneButtonItem;
     
-    // modified by springox(20140510)
-    [self reloadData];
+    // moved to @"viewWillAppear:" by springox(20141105)
+    //// modified by springox(20140510)
+    //[self reloadData];
     
     // Setup Notifications
     [self registerForNotifications];
@@ -260,6 +261,9 @@
     // modified by springox(20141105)
     //// Reset the number of selections
     //[AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
+    
+    // add by springox(20141105)
+    [self reloadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

@@ -8,6 +8,8 @@
 
 #import "AGPreviewScrollView.h"
 
+#define PRELOAD_DISTANCE   2
+
 @interface AGPreviewScrollView()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *imageViewPool;
@@ -32,24 +34,10 @@
         self.preDelegate = preDelegate;
         self.imageViewPool = [NSMutableArray array];
         
-        self.imageNumber = [self.preDelegate previewScrollViewNumberOfImage:self];
-        self.imageSize = [self.preDelegate previewScrollViewSizeOfImage:self];
-        self.currentIndex = [self.preDelegate previewScrollViewCurrentIndexOfImage:self];
-        
-        if (0 >= _imageNumber || 0 >= _imageSize.width || 0 >= _imageSize.height) {
-            self.contentSize = CGSizeZero;
-            self.contentOffset = CGPointZero;
-        } else {
-            self.contentSize = CGSizeMake(_imageSize.width*_imageNumber, _imageSize.height);
-            self.contentOffset = CGPointMake(_imageSize.width*_currentIndex, 0);
-        }
-        
-        [self layoutImageViewsForCurrentIndex];
+        [self resetContentViews];
         
         self.delegate = self;
         self.pagingEnabled = YES;
-        
-        //self.backgroundColor = [UIColor lightGrayColor];
     }
     return self;
 }
@@ -63,6 +51,30 @@
 - (NSInteger)currentIndexOfImage
 {
     return (NSInteger)_currentIndex;
+}
+
+- (void)resetContentViews
+{
+    self.imageNumber = [self.preDelegate previewScrollViewNumberOfImage:self];
+    self.imageSize = [self.preDelegate previewScrollViewSizeOfImage:self];
+    self.currentIndex = [self.preDelegate previewScrollViewCurrentIndexOfImage:self];
+    if (0 >= _imageNumber || 0 >= _imageSize.width || 0 >= _imageSize.height) {
+        self.contentSize = CGSizeZero;
+        self.contentOffset = CGPointZero;
+    } else {
+        self.contentSize = CGSizeMake(_imageSize.width*_imageNumber, _imageSize.height);
+        self.contentOffset = CGPointMake(_imageSize.width*_currentIndex, 0);
+    }
+    [self layoutImageViewsForCurrentIndex];
+    
+    NSInteger mixIndex = _currentIndex-PRELOAD_DISTANCE;
+    if (0 > mixIndex) { mixIndex = 0; }
+    NSInteger maxIndex = _currentIndex+PRELOAD_DISTANCE;
+    
+    for (NSInteger index=mixIndex; index<=maxIndex; index++) {
+        UIView *view = [self viewWithTag:[self viewTagWithIndex:index]];
+        view.frame = [self viewFrameWithIndex:index];
+    }
 }
 
 - (void)layoutImageViewsForIndex:(NSUInteger)index
@@ -86,11 +98,12 @@
         [_preDelegate previewScrollView:self didScrollWithCurrentIndex:_currentIndex];
     }
     
-    NSInteger bIndex = (NSInteger)_currentIndex-2;
-    NSInteger aIndex = (NSInteger)_currentIndex+2;
+    NSInteger bIndex = (NSInteger)_currentIndex-PRELOAD_DISTANCE;
+    NSInteger aIndex = (NSInteger)_currentIndex+PRELOAD_DISTANCE;
     
-    NSInteger tempIndex = (NSInteger)_previousIndex-2;
-    while ((NSInteger)_previousIndex+2 >= tempIndex) {
+    // take off views for previous index first
+    NSInteger tempIndex = (NSInteger)_previousIndex-PRELOAD_DISTANCE;
+    while ((NSInteger)_previousIndex+PRELOAD_DISTANCE >= tempIndex) {
         if (0 > tempIndex || (bIndex <= tempIndex && aIndex >= tempIndex)) {
             tempIndex++;
             continue;
@@ -121,16 +134,17 @@
 
 - (CGRect)viewFrameWithIndex:(NSUInteger)index
 {
-    if (UIDeviceOrientationLandscapeLeft == [UIDevice currentDevice].orientation ||
-        UIDeviceOrientationLandscapeRight == [UIDevice currentDevice].orientation) {
-        return CGRectMake(_imageSize.height*index, 0, _imageSize.height, _imageSize.width);
-    }
+//    if (UIDeviceOrientationLandscapeLeft == [UIDevice currentDevice].orientation ||
+//        UIDeviceOrientationLandscapeRight == [UIDevice currentDevice].orientation) {
+//        return CGRectMake(_imageSize.height*index, 0, _imageSize.height, _imageSize.width);
+//    }
     return CGRectMake(_imageSize.width*index, 0, _imageSize.width, _imageSize.height);
 }
 
 - (BOOL)hangUpImageViewAtIndex:(NSUInteger)index
 {
-    if (nil != [self viewWithTag:[self viewTagWithIndex:index]]) {
+    UIView *view = [self viewWithTag:[self viewTagWithIndex:index]];
+    if (nil != view) {
         return YES;
     }
     
@@ -170,7 +184,6 @@
     }
     
     imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     return imageView;
 }
 

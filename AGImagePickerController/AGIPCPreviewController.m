@@ -43,8 +43,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    [self addBottomView];
-    [self addScrollView];
+    [self setBottomView];
+    [self setScrollView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -61,19 +61,17 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
-- (void)addScrollView
+- (void)viewDidLayoutSubviews
 {
-    if (nil == _preScrollView) {
-        _preScrollView = [[AGPreviewScrollView alloc] initWithFrame:self.view.bounds preDelegate:self];
-        _preScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _preScrollView.bounces = NO;
-        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
-        [_preScrollView addGestureRecognizer:tapGesture];
-    }
-    [self.view insertSubview:_preScrollView belowSubview:_bottomBgView];
+    [super viewDidLayoutSubviews];
+    
+    [self setBottomView];
+    [self setScrollView];
+    
+    [_preScrollView resetContentViews];
 }
 
-- (void)addBottomView
+- (void)setBottomView
 {
     if (nil == _bottomBgView) {
         /*TopBgView*/
@@ -100,7 +98,7 @@
     if (nil == _bottomMiddleBtn) {
         /*Right Top Button*/
         UIButton *middleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        middleBtn.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        //middleBtn.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         middleBtn.backgroundColor = [UIColor clearColor];
         [middleBtn setTitle:@"Zoom" forState:UIControlStateNormal];
         [middleBtn addTarget:self action:@selector(didPressBottomMiddleButtonAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -121,6 +119,18 @@
     }
     _bottomRightBtn.frame = CGRectMake(_bottomBgView.frame.size.width-70, 0, 60, 44);
     [_bottomBgView addSubview:_bottomRightBtn];
+}
+
+- (void)setScrollView
+{
+    if (nil == _preScrollView) {
+        _preScrollView = [[AGPreviewScrollView alloc] initWithFrame:self.view.bounds preDelegate:self];
+        _preScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _preScrollView.bounces = NO;
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
+        [_preScrollView addGestureRecognizer:tapGesture];
+    }
+    [self.view insertSubview:_preScrollView belowSubview:_bottomBgView];
 }
 
 - (void)didReceiveMemoryWarning {
