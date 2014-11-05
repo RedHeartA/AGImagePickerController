@@ -45,7 +45,6 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    NSLog(@"preview scroll view layoutSubviews");
 }
 
 - (NSInteger)currentIndexOfImage
@@ -146,10 +145,6 @@
 
 - (CGRect)viewFrameWithIndex:(NSUInteger)index
 {
-//    if (UIDeviceOrientationLandscapeLeft == [UIDevice currentDevice].orientation ||
-//        UIDeviceOrientationLandscapeRight == [UIDevice currentDevice].orientation) {
-//        return CGRectMake(_imageSize.height*index, 0, _imageSize.height, _imageSize.width);
-//    }
     return CGRectMake(_imageSize.width*index, 0, _imageSize.width, _imageSize.height);
 }
 
@@ -219,7 +214,7 @@
 {
     NSUInteger curIndex = (NSUInteger)self.contentOffset.x/_imageSize.width;
     
-    NSLog(@"preview scroll view current index : %d", (int)curIndex);
+    //NSLog(@"preview scroll view current index : %d", (int)curIndex);
     
     [self layoutImageViewsForIndex:curIndex];
 }
