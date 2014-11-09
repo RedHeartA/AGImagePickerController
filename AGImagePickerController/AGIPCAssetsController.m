@@ -19,11 +19,13 @@
 #import "AGImagePreviewController.h"
 #import "AGIPCPreviewController.h"
 
-@interface AGIPCAssetsController ()
+@interface AGIPCAssetsController ()<AGIPCPreviewControllerDelegate>
 {
     ALAssetsGroup *_assetsGroup;
     NSMutableArray *_assets;
     __ag_weak AGImagePickerController *_imagePickerController;
+    
+    UIInterfaceOrientation lastOrientation;
 }
 
 @property (nonatomic, strong) NSMutableArray *assets;
@@ -235,9 +237,10 @@
     doneButtonItem.enabled = NO;
     self.navigationItem.rightBarButtonItem = doneButtonItem;
     
-    // moved to @"viewWillAppear:" by springox(20141105)
-    //// modified by springox(20140510)
-    //[self reloadData];
+    lastOrientation = self.interfaceOrientation;
+    
+    // modified by springox(20140510)
+    [self reloadData];
     
     // Setup Notifications
     [self registerForNotifications];
@@ -262,11 +265,17 @@
     //// Reset the number of selections
     //[AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
     
-    // add by springox(20141105)
-    [self reloadData];
+    if (lastOrientation != self.interfaceOrientation) {
+        [self reloadData];
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
+
+- (BOOL)shouldAutorotate
 {
     return YES;
 }
@@ -461,11 +470,22 @@
 // add by springox(20141023)
 - (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem
 {
+    // mark the original orientation, springox(20141109)
+    lastOrientation = self.interfaceOrientation;
+    
     AGIPCPreviewController *preController = [[AGIPCPreviewController alloc] initWithAssets:self.assets targetAsset:gridItem];
+    preController.delegate = self;
     preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self.navigationController presentViewController:preController animated:YES completion:^{
         // do nothing
     }];
+}
+
+#pragma mark - AGIPCPreviewControllerDelegate Methods
+
+- (void)previewController:(AGIPCPreviewController *)pVC didRotateFromOrientation:(UIInterfaceOrientation)fromOrientation
+{
+    // do noting
 }
 
 #pragma mark - Notifications

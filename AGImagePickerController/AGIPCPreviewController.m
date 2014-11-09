@@ -1,5 +1,5 @@
 //
-//  AGAssetsPreviewController.m
+//  AGIPCPreviewController.m
 //  AGImagePickerController Demo
 //
 //  Created by SpringOx on 14/11/1.
@@ -69,6 +69,25 @@
     [self setScrollView];
     
     [_preScrollView resetContentViews];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    return YES;
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    if ([_delegate respondsToSelector:@selector(previewController:didRotateFromOrientation:)]) {
+        [_delegate previewController:self didRotateFromOrientation:fromInterfaceOrientation];
+    }
 }
 
 - (void)setBottomView

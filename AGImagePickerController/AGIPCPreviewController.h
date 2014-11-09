@@ -1,5 +1,5 @@
 //
-//  AGAssetsPreviewController.h
+//  AGIPCPreviewController.h
 //  AGImagePickerController Demo
 //
 //  Created by SpringOx on 14/11/1.
@@ -13,7 +13,10 @@
 
 @class AGIPCPreviewController;
 @class AGIPCGridItem;
-@protocol AGAssetsPreviewControllerDelegate <NSObject>
+@protocol AGIPCPreviewControllerDelegate <NSObject>
+
+@optional
+- (void)previewController:(AGIPCPreviewController *)pVC didRotateFromOrientation:(UIInterfaceOrientation)fromOrientation;
 
 - (BOOL)previewController:(AGIPCPreviewController *)pVC canSelectItem:(AGIPCGridItem *)gridItem;
 
@@ -29,7 +32,7 @@
 
 @property (nonatomic, strong, readonly) NSArray *assets;
 
-@property (nonatomic, ag_weak) id<AGAssetsPreviewControllerDelegate, NSObject> delegate;
+@property (nonatomic, ag_weak) id<AGIPCPreviewControllerDelegate, NSObject> delegate;
 
 - (id)initWithAssets:(NSArray *)assets targetAsset:(AGIPCGridItem *)targetAsset;
 
