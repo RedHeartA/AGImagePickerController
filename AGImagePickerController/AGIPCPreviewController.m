@@ -11,6 +11,7 @@
 #import "AGIPCGridItem.h"
 #import "AGPreviewScrollView.h"
 #import "AGImagePreviewController.h"
+#import "UIButton+AGIPC.h"
 
 @interface AGIPCPreviewController ()<AGPreviewScrollViewDelegate>
 
@@ -132,11 +133,11 @@
         rightBtn.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
         rightBtn.backgroundColor = [UIColor clearColor];
         [rightBtn setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-0"] forState:UIControlStateNormal];
-        rightBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, -30);
+        rightBtn.imageEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
         [rightBtn addTarget:self action:@selector(didPressBottomRightButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         _bottomRightBtn = rightBtn;
     }
-    _bottomRightBtn.frame = CGRectMake(_bottomBgView.frame.size.width-70, 0, 60, 44);
+    _bottomRightBtn.frame = CGRectMake(_bottomBgView.frame.size.width-70, 0, 90, 44);
     [_bottomBgView addSubview:_bottomRightBtn];
 }
 
@@ -159,12 +160,13 @@
 
 - (void)updateBottomRightButtonState:(int)state
 {
-    if (1 == state) {
+    if (2 == state) {  // with animation
+        [_bottomRightBtn setImageWithAnimation:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-1"] forState:UIControlStateNormal];
+    } else if (1 == state) {  // without animation
         [_bottomRightBtn setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-1"] forState:UIControlStateNormal];
     } else {
         [_bottomRightBtn setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-0"] forState:UIControlStateNormal];
     }
-    _bottomRightBtn.tag = state;
 }
 
 - (void)didTapGestureRecognizer
@@ -208,7 +210,7 @@
     AGIPCGridItem *gridItem = [_assets objectAtIndex:index];
     gridItem.selected = !gridItem.selected;
     if (gridItem.selected) {
-        [self updateBottomRightButtonState:1];
+        [self updateBottomRightButtonState:2];
     } else {
         [self updateBottomRightButtonState:0];
     }

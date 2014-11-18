@@ -11,8 +11,8 @@
 
 #import "AGIPCGridItem.h"
 
-
 #import "AGImagePickerController+Helper.h"
+#import "UIButton+AGIPC.h"
 
 @interface AGIPCGridItem ()
 {
@@ -65,7 +65,8 @@ static NSUInteger numberOfSelectedGridItems = 0;
             //self.selectionView.hidden = !_selected;
             //self.checkmarkImageView.hidden = !_selected;
             if (self.selected) {
-                [self.checkmarkImageView setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-1"] forState:UIControlStateNormal];
+                //[self.checkmarkImageView setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-1"] forState:UIControlStateNormal];
+                [self.checkmarkImageView setImageWithAnimation:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-1"] forState:UIControlStateNormal];
             } else {
                 [self.checkmarkImageView setImage:[UIImage imageNamed:@"AGImagePickerController.bundle/AGIPC-Checkmark-0"] forState:UIControlStateNormal];
             }
