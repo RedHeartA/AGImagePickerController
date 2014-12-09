@@ -8,7 +8,7 @@
 
 #import "AGPreviewScrollView.h"
 
-#define PRELOAD_DISTANCE   2
+#define PRELOAD_DISTANCE   1
 
 @interface AGPreviewScrollView()<UIScrollViewDelegate>
 
