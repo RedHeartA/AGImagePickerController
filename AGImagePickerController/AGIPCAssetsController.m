@@ -133,10 +133,6 @@
         self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Loading", nil, [NSBundle mainBundle], @"Loading...", nil);
         self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
         
-        self.tableView.allowsMultipleSelection = NO;
-        self.tableView.allowsSelection = NO;
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        
         // Setup toolbar items
         [self setupToolbarItems];
         
@@ -231,6 +227,10 @@
     if (self.imagePickerController.shouldChangeStatusBarStyle) {
         self.wantsFullScreenLayout = YES;
     }
+    
+    self.tableView.allowsMultipleSelection = NO;
+    self.tableView.allowsSelection = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
     // Navigation Bar Items
     UIBarButtonItem *doneButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction:)];
