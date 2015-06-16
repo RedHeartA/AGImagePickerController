@@ -48,9 +48,8 @@ AGImagePickerController *imagePickerController = [[AGImagePickerController alloc
 
 ## Contact(联系)
 
-- [GitHub](https://github.com/SpringOx)
-- [Email](jiachunke@gmail.com)
-
+- [https://github.com/SpringOx(GitHub)](https://github.com/SpringOx)
+- [jiachunke@gmail.com(Email)](jiachunke@gmail.com)
 
 
 
