@@ -35,10 +35,7 @@
         
         __block AGViewController *blockSelf = self;
         
-        //ipc = [[AGImagePickerController alloc] initWithDelegate:self];
-        // modified by springox(20140503)
         ipc = [AGImagePickerController sharedInstance:self];
-        
         ipc.didFailBlock = ^(NSError *error) {
             NSLog(@"Fail. Error: %@", error);
             

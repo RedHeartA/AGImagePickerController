@@ -24,6 +24,8 @@
 - (BOOL)agGridItemCanSelect:(AGIPCGridItem *)gridItem;
 // add by springox(20140520)
 - (void)agGridItemDidTapAction:(AGIPCGridItem *)gridItem;
+// add by springox(20150712)
+- (void)agGridItemDidTapCheckMarkAction:(AGIPCGridItem *)gridItem;
 @end
 
 @interface AGIPCGridItem : UIView

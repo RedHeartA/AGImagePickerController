@@ -211,20 +211,6 @@
                     return;
                 }
                 
-                /*
-                 if (weakSelf.imagePickerController.shouldShowSavedPhotosOnTop) {
-                     if ([[group valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
-                         [self.assetsGroups insertObject:group atIndex:0];
-                     } else if ([[group valueForProperty:ALAssetsGroupPropertyType] intValue] > ALAssetsGroupSavedPhotos) {
-                         [self.assetsGroups insertObject:group atIndex:1];
-                     } else {
-                         [self.assetsGroups addObject:group];
-                     }
-                 } else {
-                     [self.assetsGroups addObject:group];
-                 }
-                 */
-                
                 @synchronized(weakSelf) {
                     // optimize the sort algorithm by springox(20140327)
                     int groupType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];

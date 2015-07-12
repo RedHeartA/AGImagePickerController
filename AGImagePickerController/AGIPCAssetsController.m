@@ -23,6 +23,8 @@
 {
     ALAssetsGroup *_assetsGroup;
     NSMutableArray *_assets;
+    NSMutableArray *_selectedAssets;
+    
     __ag_weak AGImagePickerController *_imagePickerController;
     
     UIInterfaceOrientation lastOrientation;
@@ -107,11 +109,11 @@
 
 - (NSArray *)selectedAssets
 {
-    NSMutableArray *selectedAssets = [NSMutableArray array];
+    NSMutableArray *selectedAssets = [NSMutableArray arrayWithArray:_selectedAssets];
     
 	for (AGIPCGridItem *gridItem in self.assets) 
     {		
-		if (gridItem.selected)
+		if (gridItem.selected && ![selectedAssets containsObject:gridItem.asset])
         {	
 			[selectedAssets addObject:gridItem.asset];
 		}
@@ -127,9 +129,12 @@
     self = [super initWithStyle:UITableViewStylePlain];
     if (self)
     {
-        _assets = [[NSMutableArray alloc] init];
         self.assetsGroup = assetsGroup;
+        _assets = [[NSMutableArray alloc] init];
+        _selectedAssets = [[NSMutableArray alloc] init];
+        
         self.imagePickerController = imagePickerController;
+        
         self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Loading", nil, [NSBundle mainBundle], @"Loading...", nil);
         self.title = [self.assetsGroup valueForProperty:ALAssetsGroupPropertyName];
         
@@ -188,8 +193,6 @@
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView *view = [[UIView alloc] init];
-    // modified by springox(20141010)
-    //view.backgroundColor = [UIColor whiteColor];
     view.backgroundColor = [UIColor clearColor];
     return view;
 }
@@ -260,10 +263,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    // modified by springox(20141105)
-    //// Reset the number of selections
-    //[AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
     
     if (lastOrientation != self.interfaceOrientation) {
         [self reloadData];
@@ -432,7 +431,6 @@
         if (0 == [AGIPCGridItem numberOfSelections] ) {
             self.navigationController.navigationBar.topItem.prompt = nil;
         } else {
-            //self.navigationController.navigationBar.topItem.prompt = [NSString stringWithFormat:@"(%d/%d)", [AGIPCGridItem numberOfSelections], self.assets.count];
             // Display supports up to select several photos at the same time, springox(20131220)
             NSInteger maxNumber = _imagePickerController.maximumNumberOfPhotosToBeSelected;
             if (0 < maxNumber) {
@@ -479,6 +477,23 @@
     [self.navigationController presentViewController:preController animated:YES completion:^{
         // do nothing
     }];
+}
+
+// add by springox(20150712)
+- (void)agGridItemDidTapCheckMarkAction:(AGIPCGridItem *)gridItem
+{
+    if (nil == _selectedAssets) {
+        _selectedAssets = [[NSMutableArray alloc] init];
+    }
+    
+    if (gridItem.selected) {
+        if ([_selectedAssets containsObject:gridItem.asset]) {
+            [_selectedAssets removeObject:gridItem.asset];
+        }
+        [_selectedAssets addObject:gridItem.asset];
+    } else {
+        [_selectedAssets removeObject:gridItem.asset];
+    }
 }
 
 #pragma mark - AGIPCPreviewControllerDelegate Methods

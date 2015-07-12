@@ -171,10 +171,10 @@
 		FEA599C714ED1A8C0057FF9C /* AGImagePickerController */ = {
 			isa = PBXGroup;
 			children = (
+				FEDAA95616C3089600234FF0 /* AGImagePickerController.bundle */,
 				FE6E796014FCDC8A006612F0 /* AGImagePickerControllerDefines.h */,
 				FE4DE10216C267400075E499 /* AGImagePickerController+Helper.h */,
 				FE4DE10316C267410075E499 /* AGImagePickerController+Helper.m */,
-				FEDAA95616C3089600234FF0 /* AGImagePickerController.bundle */,
 				FEA599C914ED1C500057FF9C /* AGImagePickerController.h */,
 				FEA599CA14ED1C500057FF9C /* AGImagePickerController.m */,
 				54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */,

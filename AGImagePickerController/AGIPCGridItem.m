@@ -223,6 +223,10 @@ static NSUInteger numberOfSelectedGridItems = 0;
 - (void)tapCheckMark
 {
     self.selected = !self.selected;
+    if ([self.delegate respondsToSelector:@selector(agGridItemDidTapCheckMarkAction:)])
+    {
+        [self.delegate performSelector:@selector(agGridItemDidTapCheckMarkAction:) withObject:self];
+    }
 }
 
 #pragma mark - Private
