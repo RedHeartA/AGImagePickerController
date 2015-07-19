@@ -57,8 +57,8 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
     BOOL _shouldShowSavedPhotosOnTop;
     UIStatusBarStyle _oldStatusBarStyle;
     
-    AGIPCDidFinish _didFinishBlock;
     AGIPCDidFail _didFailBlock;
+    AGIPCDidFinish _didFinishBlock;
     
     NSUInteger _maximumNumberOfPhotosToBeSelected;
     
@@ -82,6 +82,8 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
 @property (nonatomic, readonly) AGImagePickerControllerSelectionMode selectionMode;
 
 @property (nonatomic, assign) BOOL userIsDenied;
+// added by springox(20150719)
+@property (ag_weak, readonly) NSMutableArray *assetsGroupList;
 
 + (ALAssetsLibrary *)defaultAssetsLibrary;
 
@@ -97,6 +99,8 @@ maximumNumberOfPhotosToBeSelected:(NSUInteger)maximumNumberOfPhotosToBeSelected
 shouldChangeStatusBarStyle:(BOOL)shouldChangeStatusBarStyle
 toolbarItemsForManagingTheSelection:(NSArray *)toolbarItemsForManagingTheSelection
 andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop;
+
+- (void)ready;
 
 - (void)showFirstAssetsController;
 

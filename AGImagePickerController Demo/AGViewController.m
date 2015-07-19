@@ -25,7 +25,6 @@
 
 #pragma mark - Object Lifecycle
 
-
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -36,6 +35,7 @@
         __block AGViewController *blockSelf = self;
         
         ipc = [AGImagePickerController sharedInstance:self];
+        
         ipc.didFailBlock = ^(NSError *error) {
             NSLog(@"Fail. Error: %@", error);
             
@@ -65,6 +65,8 @@
             
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
         };
+        
+        [ipc ready];
     }
     return self;
 }

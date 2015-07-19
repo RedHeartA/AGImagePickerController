@@ -24,9 +24,6 @@
 
 @interface AGIPCAlbumsController ()
 
-- (void)registerForNotifications;
-- (void)unregisterFromNotifications;
-
 - (void)didChangeLibrary:(NSNotification *)notification;
 
 - (void)reloadData;
@@ -96,9 +93,6 @@
         [self loadAssetsGroups];
     }
     
-    // Setup Notifications
-    [self registerForNotifications];
-    
     // Navigation Bar Items
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
 	self.navigationItem.leftBarButtonItem = cancelButton;
@@ -107,9 +101,6 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    
-    // Destroy Notifications
-    [self unregisterFromNotifications];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -128,15 +119,56 @@
 {
     return UIInterfaceOrientationMaskAll;
 }
-
-- (void)pushFirstAssetsController
+// added by springox(20150719)
+- (void)updateAssetsGroupList:(NSArray *)groupList
 {
+    @synchronized(self) {
+        [self.assetsGroups removeAllObjects];
+        [self.assetsGroups addObjectsFromArray:groupList];
+        
+        [self reloadData];
+    }
+}
+
+- (void)pushAssetsControllerWithName:(NSString *)name
+{
+    if (0 == [name length]) {
+        return;
+    }
+    
     [self.navigationController popToRootViewControllerAnimated:NO];
     
     @synchronized(self) {
         if (0 < self.assetsGroups.count) {
-            AGIPCAssetsController *controller = [[AGIPCAssetsController alloc] initWithImagePickerController:self.imagePickerController andAssetsGroup:self.assetsGroups[0]];
-            [self.navigationController pushViewController:controller animated:NO];
+            ALAssetsGroup *targetAssetsGroup = nil;
+            for (ALAssetsGroup *assetsGroup in self.assetsGroups) {
+                NSString *key = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
+                if ([name isEqualToString:key]) {
+                    targetAssetsGroup = assetsGroup;
+                    break;
+                }
+            }
+            
+            if (nil != targetAssetsGroup) {
+                AGIPCAssetsController *controller = [[AGIPCAssetsController alloc] initWithImagePickerController:self.imagePickerController andAssetsGroup:targetAssetsGroup];
+                [self.navigationController pushViewController:controller animated:NO];
+            }
+        } else {
+            static int tryCount;
+            if (tryCount < 3) {
+                [self performSelector:@selector(pushAssetsControllerWithName:) withObject:name afterDelay:0.8];
+                ++tryCount;
+            }
+        }
+    }
+}
+
+- (void)pushFirstAssetsController
+{
+    @synchronized(self) {
+        if (0 < self.assetsGroups.count) {
+            NSString *key = [[self.assetsGroups firstObject] valueForProperty:ALAssetsGroupPropertyName];
+            [self pushAssetsControllerWithName:key];
         } else {
             static int tryCount;
             if (tryCount < 3) {
@@ -195,6 +227,9 @@
 
 - (void)loadAssetsGroups
 {
+    [self reloadData];
+    
+    /*
     __ag_weak AGIPCAlbumsController *weakSelf = self;
     
     [self.assetsGroups removeAllObjects];
@@ -249,6 +284,8 @@
         }
         
     });
+     */
+    
 }
 
 - (void)reloadData
@@ -259,28 +296,6 @@
 - (void)cancelAction:(id)sender
 {
     [self.imagePickerController performSelector:@selector(didCancelPickingAssets)];
-}
-
-#pragma mark - Notifications
-
-- (void)registerForNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(didChangeLibrary:) 
-                                                 name:ALAssetsLibraryChangedNotification 
-                                               object:[AGImagePickerController defaultAssetsLibrary]];
-}
-
-- (void)unregisterFromNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:ALAssetsLibraryChangedNotification 
-                                                  object:[AGImagePickerController defaultAssetsLibrary]];
-}
-
-- (void)didChangeLibrary:(NSNotification *)notification
-{
-    [self loadAssetsGroups];
 }
 
 @end

@@ -179,20 +179,20 @@
 				FEA599CA14ED1C500057FF9C /* AGImagePickerController.m */,
 				54628BD419FAE04E00CBDE0C /* AGImagePreviewController.h */,
 				54628BD519FAE04E00CBDE0C /* AGImagePreviewController.m */,
-				545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */,
-				545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */,
 				FEA599E614ED38ED0057FF9C /* AGIPCAlbumsController.h */,
 				FEA599E714ED38ED0057FF9C /* AGIPCAlbumsController.m */,
 				FE3BAF8614EE80E7001BF3EC /* AGIPCAssetsController.h */,
 				FE3BAF8714EE80E7001BF3EC /* AGIPCAssetsController.m */,
 				545FCB1C1A04849F004F4A87 /* AGIPCPreviewController.h */,
 				545FCB1D1A04849F004F4A87 /* AGIPCPreviewController.m */,
+				545FCB1F1A04D69E004F4A87 /* AGPreviewScrollView.h */,
+				545FCB201A04D69E004F4A87 /* AGPreviewScrollView.m */,
+				FE3851AD1504CF7B00A9F7F8 /* AGIPCToolbarItem.h */,
+				FE3851AE1504CF7B00A9F7F8 /* AGIPCToolbarItem.m */,
 				FECDC8FF14EDB9C30038006D /* AGIPCGridCell.h */,
 				FECDC90014EDB9C30038006D /* AGIPCGridCell.m */,
 				FECDC90314EDBB690038006D /* AGIPCGridItem.h */,
 				FECDC90414EDBB690038006D /* AGIPCGridItem.m */,
-				FE3851AD1504CF7B00A9F7F8 /* AGIPCToolbarItem.h */,
-				FE3851AE1504CF7B00A9F7F8 /* AGIPCToolbarItem.m */,
 				FE465F971590B25A00C30A1D /* ALAsset+AGIPC.h */,
 				FE465F981590B25A00C30A1D /* ALAsset+AGIPC.m */,
 				540E88231A1A60AC0015BA97 /* UIButton+AGIPC.h */,
@@ -381,7 +381,8 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AGImagePickerController Demo/AGImagePickerController Demo-Prefix.pch";
 				INFOPLIST_FILE = "AGImagePickerController Demo/AGImagePickerController Demo-Info.plist";

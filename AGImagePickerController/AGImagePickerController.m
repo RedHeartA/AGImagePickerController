@@ -18,12 +18,16 @@ static AGImagePickerController *_sharedInstance = nil;
 
 @interface AGImagePickerController ()
 {
-    
+    NSMutableArray *_assetsGroupList;
 }
 
 - (void)didFinishPickingAssets:(NSArray *)selectedAssets;
 - (void)didCancelPickingAssets;
 - (void)didFail:(NSError *)error;
+
+// added by springox(20150719)
+- (void)registerForNotifications;
+- (void)unregisterFromNotifications;
 
 @end
 
@@ -118,7 +122,23 @@ static AGImagePickerController *_sharedInstance = nil;
     }
 }
 
+- (NSMutableArray *)assetsGroupList
+{
+    if (_assetsGroupList == nil)
+    {
+        _assetsGroupList = [[NSMutableArray alloc] init];
+    }
+    
+    return _assetsGroupList;
+}
+
 #pragma mark - Object Lifecycle
+
+- (void)dealloc
+{
+    // added by springox(20150719)
+    [self unregisterFromNotifications];
+}
 
 - (id)init
 {
@@ -162,17 +182,93 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
         self.selection = nil;
         self.maximumNumberOfPhotosToBeSelected = maximumNumberOfPhotosToBeSelected;
         self.delegate = delegate;
+        
         self.didFailBlock = failureBlock;
         self.didFinishBlock = successBlock;
         
         self.viewControllers = @[[[AGIPCAlbumsController alloc] initWithImagePickerController:self]];
+        
+        // added by springox(20150719)
+        [self registerForNotifications];
     }
     
     return self;
 }
 
+- (void)ready
+{
+    [self loadAssetsGroupList];
+}
+
+- (void)loadAssetsGroupList
+{
+    __ag_weak AGImagePickerController *weakSelf = self;
+    
+    [self.assetsGroupList removeAllObjects];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        @autoreleasepool {
+            
+            void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop)
+            {
+                // filter the value==0, springox(20140502)
+                if (group == nil || group.numberOfAssets == 0)
+                {
+                    return;
+                }
+                
+                @synchronized(weakSelf) {
+                    // optimize the sort algorithm by springox(20140327)
+                    int groupType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
+                    if (weakSelf.shouldShowSavedPhotosOnTop && groupType == ALAssetsGroupSavedPhotos) {
+                        [weakSelf.assetsGroupList insertObject:group atIndex:0];
+                    } else {
+                        NSUInteger index = 0;
+                        for (ALAssetsGroup *g in [NSArray arrayWithArray:weakSelf.assetsGroupList]) {
+                            if (weakSelf.shouldShowSavedPhotosOnTop && [[g valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
+                                index++;
+                                continue;
+                            }
+                            if (groupType > [[g valueForProperty:ALAssetsGroupPropertyType] intValue]) {
+                                [weakSelf.assetsGroupList insertObject:group atIndex:index];
+                                break;
+                            }
+                            index++;
+                        }
+                        if (![weakSelf.assetsGroupList containsObject:group]) {
+                            [weakSelf.assetsGroupList addObject:group];
+                        }
+                    }
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[weakSelf.viewControllers firstObject];
+                    if ([albumsCtl respondsToSelector:@selector(updateAssetsGroupList:)]) {
+                        [albumsCtl updateAssetsGroupList:weakSelf.assetsGroupList];
+                    }
+                });
+            };
+            
+            void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
+                NSLog(@"A problem occured. Error: %@", error.localizedDescription);
+                [weakSelf performSelector:@selector(didFail:) withObject:error];
+            };
+            
+            [[AGImagePickerController defaultAssetsLibrary] enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
+        }
+        
+    });
+}
+
 - (void)showFirstAssetsController
 {
+    // added by springox(20150719)
+    if (0 == [self.assetsGroupList count]) {
+        [self loadAssetsGroupList];
+    }
+    
     AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
     if ([albumsCtl respondsToSelector:@selector(pushFirstAssetsController)]) {
         [albumsCtl pushFirstAssetsController];
@@ -208,8 +304,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 
 - (void)didCancelPickingAssets
 {
-    //[self popToRootViewControllerAnimated:NO];
-    
     // Reset the number of selections
     [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
     
@@ -240,6 +334,28 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     {
 		[self.delegate performSelector:@selector(agImagePickerController:didFail:) withObject:self withObject:error];
 	}
+}
+
+#pragma mark - Notifications
+
+- (void)registerForNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didChangeLibrary:)
+                                                 name:ALAssetsLibraryChangedNotification
+                                               object:[AGImagePickerController defaultAssetsLibrary]];
+}
+
+- (void)unregisterFromNotifications
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:ALAssetsLibraryChangedNotification
+                                                  object:[AGImagePickerController defaultAssetsLibrary]];
+}
+
+- (void)didChangeLibrary:(NSNotification *)notification
+{
+    [self loadAssetsGroupList];
 }
 
 @end
