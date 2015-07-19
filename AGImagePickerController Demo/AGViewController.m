@@ -129,6 +129,8 @@
     
     // modified by springox(20140503)
     [ipc showFirstAssetsController];
+    //// added by springox(20150719)
+    //[ipc showAssetsControllerWithName:@"Camera Roll"];
 }
 
 #pragma mark - AGImagePickerControllerDelegate methods

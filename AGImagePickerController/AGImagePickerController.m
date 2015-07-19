@@ -262,6 +262,19 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     });
 }
 
+- (void)showAssetsControllerWithName:(NSString *)name
+{
+    // added by springox(20150719)
+    if (0 == [self.assetsGroupList count]) {
+        [self loadAssetsGroupList];
+    }
+    
+    AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
+    if ([albumsCtl respondsToSelector:@selector(pushAssetsControllerWithName:)]) {
+        [albumsCtl pushAssetsControllerWithName:name];
+    }
+}
+
 - (void)showFirstAssetsController
 {
     // added by springox(20150719)

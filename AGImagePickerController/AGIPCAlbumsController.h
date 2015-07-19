@@ -21,8 +21,10 @@
 @property (ag_weak) AGImagePickerController *imagePickerController;
 
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController;
+
 // added by springox(20150719)
 - (void)updateAssetsGroupList:(NSArray *)groupList;
+
 // added by springox(20150719)
 - (void)pushAssetsControllerWithName:(NSString *)name;
 

@@ -119,7 +119,7 @@
 {
     return UIInterfaceOrientationMaskAll;
 }
-// added by springox(20150719)
+
 - (void)updateAssetsGroupList:(NSArray *)groupList
 {
     @synchronized(self) {
@@ -142,8 +142,8 @@
         if (0 < self.assetsGroups.count) {
             ALAssetsGroup *targetAssetsGroup = nil;
             for (ALAssetsGroup *assetsGroup in self.assetsGroups) {
-                NSString *key = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
-                if ([name isEqualToString:key]) {
+                NSString *pName = [assetsGroup valueForProperty:ALAssetsGroupPropertyName];
+                if ([name isEqualToString:pName]) {
                     targetAssetsGroup = assetsGroup;
                     break;
                 }
@@ -167,8 +167,8 @@
 {
     @synchronized(self) {
         if (0 < self.assetsGroups.count) {
-            NSString *key = [[self.assetsGroups firstObject] valueForProperty:ALAssetsGroupPropertyName];
-            [self pushAssetsControllerWithName:key];
+            NSString *pName = [[self.assetsGroups firstObject] valueForProperty:ALAssetsGroupPropertyName];
+            [self pushAssetsControllerWithName:pName];
         } else {
             static int tryCount;
             if (tryCount < 3) {
