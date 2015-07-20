@@ -15,35 +15,44 @@ AGImagePickerController是一个图片选择器，支持图片多选，支持大
 ### Usage(用法)
 
 ``` objective-c
-AGImagePickerController *imagePickerController = [[AGImagePickerController alloc] initWithFailureBlock:^(NSError *error) {
-
-        if (error == nil)
-        {
-            NSLog(@"User has cancelled.");
-            [self dismissModalViewControllerAnimated:YES];
-        } else
-        {     
-            NSLog(@"Error: %@", error);
+        self.selectedPhotos = [NSMutableArray array];
         
-            // Wait for the view controller to show first and hide it after that
-            double delayInSeconds = 0.5;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                [self dismissModalViewControllerAnimated:YES];
-            });
-        }
+        __block AGViewController *blockSelf = self;
+        
+        ipc = [AGImagePickerController sharedInstance:self];
+        
+        ipc.didFailBlock = ^(NSError *error) {
+            NSLog(@"Fail. Error: %@", error);
             
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            if (error == nil) {
+                [blockSelf.selectedPhotos removeAllObjects];
+                NSLog(@"User has cancelled.");
+                
+                [blockSelf dismissModalViewControllerAnimated:YES];
+            } else {
+                
+                // We need to wait for the view controller to appear first.
+                double delayInSeconds = 0.5;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [blockSelf dismissModalViewControllerAnimated:YES];
+                });
+            }
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+            
+        };
+        ipc.didFinishBlock = ^(NSArray *info) {
+            [blockSelf.selectedPhotos setArray:info];
+            
+            NSLog(@"Info: %@", info);
+            [blockSelf dismissModalViewControllerAnimated:YES];
+            
+            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+        };
         
-    } andSuccessBlock:^(NSArray *info) {
-        NSLog(@"Info: %@", info);
-        [self dismissModalViewControllerAnimated:YES];
-        
-        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-    }];
-    
-    [self presentModalViewController:imagePickerController animated:YES];
-    [imagePickerController release];
+        // Before show ablums view, you need invoke this method, the sooner the better.
+        [ipc ready];
 ```
 
 ## Contact(联系)
