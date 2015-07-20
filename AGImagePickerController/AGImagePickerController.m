@@ -202,7 +202,7 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 // Support use name to show asset list which you need.
 - (void)showAssetsControllerWithName:(NSString *)name
 {
-    // just for keep the list is not empty springox(20150720)
+    // just for keep the group list not empty springox(20150720)
     [self ready];
     
     AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
