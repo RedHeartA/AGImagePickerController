@@ -66,6 +66,7 @@
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
         };
         
+        // Before show ablums view, you need invoke this method, the sooner the better.
         [ipc ready];
     }
     return self;
