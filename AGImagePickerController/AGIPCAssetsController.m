@@ -327,10 +327,12 @@
 
 - (void)loadAssets
 {
+    // add by springox(20150720)
+    [AGIPCGridItem performSelector:@selector(resetNumberOfSelections)];
+    
     [self.assets removeAllObjects];
     
     __ag_weak AGIPCAssetsController *weakSelf = self;
-    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         
         __strong AGIPCAssetsController *strongSelf = weakSelf;
@@ -376,7 +378,6 @@
     
     //[self setTitle:[self.assetsGroup valueForProperty:ALAssetsGroupPropertyName]];
     [self changeSelectionInformation];
-    
     
     NSInteger totalRows = [self.tableView numberOfRowsInSection:0];
     //Prevents crash if totalRows = 0 (when the album is empty).
@@ -427,7 +428,9 @@
 
 - (void)changeSelectionInformation
 {
-    if (self.imagePickerController.shouldDisplaySelectionInformation ) {
+    self.navigationItem.rightBarButtonItem.enabled = ([AGIPCGridItem numberOfSelections] > 0);
+    
+    if (self.imagePickerController.shouldDisplaySelectionInformation) {
         if (0 == [AGIPCGridItem numberOfSelections] ) {
             self.navigationController.navigationBar.topItem.prompt = nil;
         } else {
@@ -440,13 +443,14 @@
             }
         }
     }
+    
+    
 }
 
 #pragma mark - AGGridItemDelegate Methods
 
 - (void)agGridItem:(AGIPCGridItem *)gridItem didChangeNumberOfSelections:(NSNumber *)numberOfSelections
 {
-    self.navigationItem.rightBarButtonItem.enabled = (numberOfSelections.unsignedIntegerValue > 0);
     [self changeSelectionInformation];
 }
 
@@ -523,7 +527,7 @@
 - (void)didChangeLibrary:(NSNotification *)notification
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.navigationController popToRootViewControllerAnimated:NO];
+        [self loadAssets];
     });
 }
 

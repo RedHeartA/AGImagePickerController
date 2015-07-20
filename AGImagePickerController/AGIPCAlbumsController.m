@@ -17,6 +17,7 @@
 @interface AGIPCAlbumsController ()
 {
     NSMutableArray *_assetsGroups;
+    BOOL _isLoadingAssetsGroups;
     __ag_weak AGImagePickerController *_imagePickerController;
 }
 
@@ -62,11 +63,6 @@
         
         // added by springox(20150719)
         [self registerForNotifications];
-        
-        //// avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-        //if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.f) {
-        //    [self loadAssetsGroups];
-        //}
     }
     
     return self;
@@ -97,11 +93,6 @@
     }
     self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Albums", nil, [NSBundle mainBundle], @"Albums", nil);
     
-    //// avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-    //if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.f) {
-    //    [self loadAssetsGroups];
-    //}
-    
     // Navigation Bar Items
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
 	self.navigationItem.leftBarButtonItem = cancelButton;
@@ -117,6 +108,12 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setToolbarHidden:YES animated:YES];
+    
+    @synchronized(self) {
+        if (0 == [self.assetsGroups count]) {
+            [self loadAssetsGroups];
+        }
+    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -129,14 +126,9 @@
     return UIInterfaceOrientationMaskAll;
 }
 
-- (void)updateAssetsGroupList:(NSArray *)groupList
+- (void)updateAssetsGroups
 {
-    @synchronized(self) {
-        [self.assetsGroups removeAllObjects];
-        [self.assetsGroups addObjectsFromArray:groupList];
-        
-        [self reloadData];
-    }
+    [self loadAssetsGroups];
 }
 
 - (void)pushAssetsControllerWithName:(NSString *)name
@@ -236,16 +228,24 @@
 
 - (void)loadAssetsGroups
 {
-    /*
-    __ag_weak AGIPCAlbumsController *weakSelf = self;
+    BOOL wasLoading = NO;
+    @synchronized(self) {
+        wasLoading = _isLoadingAssetsGroups;
+        if (!_isLoadingAssetsGroups) {
+            _isLoadingAssetsGroups = YES;
+            [self.assetsGroups removeAllObjects];
+        }
+    }
     
-    [self.assetsGroups removeAllObjects];
+    if (wasLoading) {
+        return;
+    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
         @autoreleasepool {
             
-            void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop) 
+            void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop)
             {
                 // filter the value==0, springox(20140502)
                 if (group == nil || group.numberOfAssets == 0)
@@ -253,20 +253,24 @@
                     return;
                 }
                 
-                @synchronized(weakSelf) {
+                @synchronized(self) {
                     // optimize the sort algorithm by springox(20140327)
                     int groupType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
-                    if (weakSelf.imagePickerController.shouldShowSavedPhotosOnTop && groupType == ALAssetsGroupSavedPhotos) {
-                        [self.assetsGroups insertObject:group atIndex:0];
+                    if (self.imagePickerController.shouldShowSavedPhotosOnTop && groupType == ALAssetsGroupSavedPhotos) {
+                        if (![self.assetsGroups containsObject:group]) {
+                            [self.assetsGroups insertObject:group atIndex:0];
+                        }
                     } else {
                         NSUInteger index = 0;
                         for (ALAssetsGroup *g in [NSArray arrayWithArray:self.assetsGroups]) {
-                            if (weakSelf.imagePickerController.shouldShowSavedPhotosOnTop && [[g valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
+                            if (self.imagePickerController.shouldShowSavedPhotosOnTop && [[g valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
                                 index++;
                                 continue;
                             }
                             if (groupType > [[g valueForProperty:ALAssetsGroupPropertyType] intValue]) {
-                                [self.assetsGroups insertObject:group atIndex:index];
+                                if (![self.assetsGroups containsObject:group]) {
+                                    [self.assetsGroups insertObject:group atIndex:index];
+                                }
                                 break;
                             }
                             index++;
@@ -278,21 +282,26 @@
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self reloadData];
+                    @synchronized(self) {
+                        NSLog(@"Load assets group list finished. Items %@", self.assetsGroups);
+                        [self reloadData];
+                        _isLoadingAssetsGroups = NO;
+                    }
                 });
             };
             
             void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
-                NSLog(@"A problem occured. Error: %@", error.localizedDescription);
-                [self.imagePickerController performSelector:@selector(didFail:) withObject:error];
-            };	
+                @synchronized(self) {
+                    NSLog(@"A problem occured. Error: %@", error.localizedDescription);
+                    _isLoadingAssetsGroups = NO;
+                    [self.imagePickerController performSelector:@selector(didFail:) withObject:error];
+                }
+            };
             
             [[AGImagePickerController defaultAssetsLibrary] enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
         }
         
     });
-     */
-    
 }
 
 - (void)reloadData
@@ -326,9 +335,7 @@
 
 - (void)didChangeLibrary:(NSNotification *)notification
 {
-    if ([self.imagePickerController respondsToSelector:@selector(loadAssetsGroupList)]) {
-        [self.imagePickerController performSelector:@selector(loadAssetsGroupList)];
-    }
+    [self loadAssetsGroups];
 }
 
 @end

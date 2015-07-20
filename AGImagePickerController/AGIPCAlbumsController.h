@@ -23,7 +23,7 @@
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController;
 
 // added by springox(20150719)
-- (void)updateAssetsGroupList:(NSArray *)groupList;
+- (void)updateAssetsGroups;
 
 // added by springox(20150719)
 - (void)pushAssetsControllerWithName:(NSString *)name;

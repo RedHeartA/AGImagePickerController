@@ -82,8 +82,6 @@ shouldShowToolbarForManagingTheSelectionInSelectionMode:(AGImagePickerController
 @property (nonatomic, readonly) AGImagePickerControllerSelectionMode selectionMode;
 
 @property (nonatomic, assign) BOOL userIsDenied;
-// added by springox(20150719)
-@property (ag_weak, readonly) NSMutableArray *assetsGroupList;
 
 + (ALAssetsLibrary *)defaultAssetsLibrary;
 

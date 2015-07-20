@@ -18,7 +18,7 @@ static AGImagePickerController *_sharedInstance = nil;
 
 @interface AGImagePickerController ()
 {
-    NSMutableArray *_assetsGroupList;
+    
 }
 
 - (void)didFinishPickingAssets:(NSArray *)selectedAssets;
@@ -118,16 +118,6 @@ static AGImagePickerController *_sharedInstance = nil;
     }
 }
 
-- (NSMutableArray *)assetsGroupList
-{
-    if (_assetsGroupList == nil)
-    {
-        _assetsGroupList = [[NSMutableArray alloc] init];
-    }
-    
-    return _assetsGroupList;
-}
-
 #pragma mark - Object Lifecycle
 
 - (id)init
@@ -189,91 +179,31 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 
 - (void)ready
 {
-    [self loadAssetsGroupList];
+    @synchronized(self) {
+        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
+        if ([albumsCtl respondsToSelector:@selector(assetsGroups)]) {
+            if (0 == [albumsCtl.assetsGroups count]) {
+                [self loadAssetsGroupList];
+            }
+        }
+    }
 }
 
 - (void)loadAssetsGroupList
 {
-    __ag_weak AGImagePickerController *weakSelf = self;
-    
-    @synchronized(weakSelf) {
-        [self.assetsGroupList removeAllObjects];
-    }
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        
-        @autoreleasepool {
-            
-            void (^assetGroupEnumerator)(ALAssetsGroup *, BOOL *) = ^(ALAssetsGroup *group, BOOL *stop)
-            {
-                // filter the value==0, springox(20140502)
-                if (group == nil || group.numberOfAssets == 0)
-                {
-                    return;
-                }
-                
-                @synchronized(weakSelf) {
-                    // optimize the sort algorithm by springox(20140327)
-                    int groupType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
-                    if (weakSelf.shouldShowSavedPhotosOnTop && groupType == ALAssetsGroupSavedPhotos) {
-                        if (![weakSelf.assetsGroupList containsObject:group]) {
-                            [weakSelf.assetsGroupList insertObject:group atIndex:0];
-                        }
-                    } else {
-                        NSUInteger index = 0;
-                        for (ALAssetsGroup *g in [NSArray arrayWithArray:weakSelf.assetsGroupList]) {
-                            if (weakSelf.shouldShowSavedPhotosOnTop && [[g valueForProperty:ALAssetsGroupPropertyType] intValue] == ALAssetsGroupSavedPhotos) {
-                                index++;
-                                continue;
-                            }
-                            if (groupType > [[g valueForProperty:ALAssetsGroupPropertyType] intValue]) {
-                                if (![weakSelf.assetsGroupList containsObject:group]) {
-                                    [weakSelf.assetsGroupList insertObject:group atIndex:index];
-                                }
-                                break;
-                            }
-                            index++;
-                        }
-                        if (![weakSelf.assetsGroupList containsObject:group]) {
-                            [weakSelf.assetsGroupList addObject:group];
-                        }
-                    }
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    @synchronized(weakSelf) {
-                        NSLog(@"load assets group list finished %@", weakSelf.assetsGroupList);
-                        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[weakSelf.viewControllers firstObject];
-                        if ([albumsCtl respondsToSelector:@selector(updateAssetsGroupList:)]) {
-                            [albumsCtl updateAssetsGroupList:weakSelf.assetsGroupList];
-                        }
-                    }
-                });
-            };
-            
-            void (^assetGroupEnumberatorFailure)(NSError *) = ^(NSError *error) {
-                NSLog(@"A problem occured. Error: %@", error.localizedDescription);
-                [weakSelf performSelector:@selector(didFail:) withObject:error];
-            };
-            
-            [[AGImagePickerController defaultAssetsLibrary] enumerateGroupsWithTypes:ALAssetsGroupAll usingBlock:assetGroupEnumerator failureBlock:assetGroupEnumberatorFailure];
+    @synchronized(self) {
+        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
+        if ([albumsCtl respondsToSelector:@selector(updateAssetsGroups)]) {
+            [albumsCtl updateAssetsGroups];
         }
-        
-    });
+    }
 }
 
 // Support use name to show asset list which you need.
 - (void)showAssetsControllerWithName:(NSString *)name
 {
-    // added by springox(20150719)
-    if (0 == [self.assetsGroupList count]) {
-        [self loadAssetsGroupList];
-    } else {
-        // just for assets group list update every time, keep the list is newest version springox(20150720)
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self loadAssetsGroupList];
-        });
-    }
+    // just for keep the list is not empty springox(20150720)
+    [self ready];
     
     AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
     if (0 == [name length]) {
