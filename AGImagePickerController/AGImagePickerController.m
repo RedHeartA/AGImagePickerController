@@ -177,11 +177,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     // do nothing
 }
 
-- (void)ready
-{
-    // do nothing
-}
-
 // Support use name to show asset list which you need.
 - (void)showAssetsControllerWithName:(NSString *)name
 {
