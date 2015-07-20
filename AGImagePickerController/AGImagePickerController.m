@@ -179,32 +179,12 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 
 - (void)ready
 {
-    @synchronized(self) {
-        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
-        if ([albumsCtl respondsToSelector:@selector(assetsGroups)]) {
-            if (0 == [albumsCtl.assetsGroups count]) {
-                [self loadAssetsGroupList];
-            }
-        }
-    }
-}
-
-- (void)loadAssetsGroupList
-{
-    @synchronized(self) {
-        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
-        if ([albumsCtl respondsToSelector:@selector(updateAssetsGroups)]) {
-            [albumsCtl updateAssetsGroups];
-        }
-    }
+    // do nothing
 }
 
 // Support use name to show asset list which you need.
 - (void)showAssetsControllerWithName:(NSString *)name
 {
-    // just for keep the group list not empty springox(20150720)
-    [self ready];
-    
     AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
     if (0 == [name length]) {
         if ([albumsCtl respondsToSelector:@selector(pushFirstAssetsController)]) {

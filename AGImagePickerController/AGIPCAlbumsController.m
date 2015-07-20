@@ -63,6 +63,12 @@
         
         // added by springox(20150719)
         [self registerForNotifications];
+        
+        // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.f) {
+            [self loadAssetsGroups];
+        }
+
     }
     
     return self;
@@ -96,6 +102,11 @@
     // Navigation Bar Items
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
 	self.navigationItem.leftBarButtonItem = cancelButton;
+    
+    // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.f) {
+        [self loadAssetsGroups];
+    }
 }
 
 - (void)viewDidUnload
@@ -108,12 +119,6 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setToolbarHidden:YES animated:YES];
-    
-    @synchronized(self) {
-        if (0 == [self.assetsGroups count]) {
-            [self loadAssetsGroups];
-        }
-    }
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -124,11 +129,6 @@
 - (NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
-}
-
-- (void)updateAssetsGroups
-{
-    [self loadAssetsGroups];
 }
 
 - (void)pushAssetsControllerWithName:(NSString *)name
