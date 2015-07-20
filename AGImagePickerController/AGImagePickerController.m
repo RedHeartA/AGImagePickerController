@@ -130,11 +130,6 @@ static AGImagePickerController *_sharedInstance = nil;
 
 #pragma mark - Object Lifecycle
 
-- (void)dealloc
-{
-    // do nothing
-}
-
 - (id)init
 {
     return [self initWithDelegate:nil failureBlock:nil successBlock:nil maximumNumberOfPhotosToBeSelected:0 shouldChangeStatusBarStyle:SHOULD_CHANGE_STATUS_BAR_STYLE toolbarItemsForManagingTheSelection:nil andShouldShowSavedPhotosOnTop:SHOULD_SHOW_SAVED_PHOTOS_ON_TOP];
@@ -187,6 +182,11 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     return self;
 }
 
+- (void)dealloc
+{
+    // do nothing
+}
+
 - (void)ready
 {
     [self loadAssetsGroupList];
@@ -196,7 +196,9 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 {
     __ag_weak AGImagePickerController *weakSelf = self;
     
-    [self.assetsGroupList removeAllObjects];
+    @synchronized(weakSelf) {
+        [self.assetsGroupList removeAllObjects];
+    }
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
@@ -267,7 +269,7 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     if (0 == [self.assetsGroupList count]) {
         [self loadAssetsGroupList];
     } else {
-        // just for assets group list update every time, keep the newest version springox(20150720)
+        // just for assets group list update every time, keep the list is newest version springox(20150720)
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self loadAssetsGroupList];
         });

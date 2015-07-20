@@ -35,6 +35,9 @@
         __block AGViewController *blockSelf = self;
         
         ipc = [AGImagePickerController sharedInstance:self];
+        // Before show ablums view, you need invoke this method, the sooner the better.
+        // For Example: invoke in application:didFinishLaunchingWithOptions of AppDelegate springox(20150719)
+        [ipc ready];
         
         ipc.didFailBlock = ^(NSError *error) {
             NSLog(@"Fail. Error: %@", error);
@@ -65,9 +68,6 @@
             
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
         };
-        
-        // Before show ablums view, you need invoke this method, the sooner the better.
-        [ipc ready];
     }
     return self;
 }

@@ -104,8 +104,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop;
 // For Example: invoke in application:didFinishLaunchingWithOptions of AppDelegate springox(20150719)
 - (void)ready;
 
-- (void)loadAssetsGroupList;
-
 // Support use name to show asset list which you need. springox(20150719)
 - (void)showAssetsControllerWithName:(NSString *)name;
 

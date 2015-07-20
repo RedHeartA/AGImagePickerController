@@ -51,11 +51,6 @@
 
 #pragma mark - Object Lifecycle
 
-- (void)dealloc
-{
-    [self unregisterFromNotifications];
-}
-
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController
 {
     self = [super initWithStyle:UITableViewStylePlain];
@@ -83,6 +78,11 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+- (void)dealloc
+{
+    [self unregisterFromNotifications];
 }
 
 #pragma mark - View lifecycle
@@ -327,7 +327,7 @@
 - (void)didChangeLibrary:(NSNotification *)notification
 {
     if ([self.imagePickerController respondsToSelector:@selector(loadAssetsGroupList)]) {
-        [self.imagePickerController loadAssetsGroupList];
+        [self.imagePickerController performSelector:@selector(loadAssetsGroupList)];
     }
 }
 
