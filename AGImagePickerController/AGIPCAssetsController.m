@@ -38,9 +38,6 @@
 
 - (void)changeSelectionInformation;
 
-- (void)registerForNotifications;
-- (void)unregisterFromNotifications;
-
 - (void)didChangeLibrary:(NSNotification *)notification;
 - (void)didChangeToolbarItemsForManagingTheSelection:(NSNotification *)notification;
 
@@ -57,6 +54,9 @@
 - (void)selectAllAction:(id)sender;
 - (void)deselectAllAction:(id)sender;
 - (void)customBarButtonItemAction:(id)sender;
+
+- (void)registerForNotifications;
+- (void)unregisterFromNotifications;
 
 @end
 
@@ -522,12 +522,14 @@
 
 - (void)didChangeLibrary:(NSNotification *)notification
 {
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.8 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.navigationController popToRootViewControllerAnimated:NO];
+    });
 }
 
 - (void)didChangeToolbarItemsForManagingTheSelection:(NSNotification *)notification
 {
-    NSLog(@"here.");
+    NSLog(@"here.%@", notification);
 }
 
 @end

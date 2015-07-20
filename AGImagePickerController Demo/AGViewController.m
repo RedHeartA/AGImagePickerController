@@ -127,9 +127,10 @@
 
     [self presentModalViewController:ipc animated:YES];
     
-    // modified by springox(20140503)
+    // Show first assets list, modified by springox(20140503)
     [ipc showFirstAssetsController];
-    //// added by springox(20150719)
+    
+    //// Show assets list with name, added by springox(20150719)
     //[ipc showAssetsControllerWithName:@"Camera Roll"];
 }
 

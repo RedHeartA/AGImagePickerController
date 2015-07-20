@@ -24,11 +24,12 @@
 
 @interface AGIPCAlbumsController ()
 
-- (void)didChangeLibrary:(NSNotification *)notification;
-
 - (void)reloadData;
 
 - (void)cancelAction:(id)sender;
+
+- (void)registerForNotifications;
+- (void)unregisterFromNotifications;
 
 @end
 
@@ -50,6 +51,11 @@
 
 #pragma mark - Object Lifecycle
 
+- (void)dealloc
+{
+    [self unregisterFromNotifications];
+}
+
 - (id)initWithImagePickerController:(AGImagePickerController *)imagePickerController
 {
     self = [super initWithStyle:UITableViewStylePlain];
@@ -59,10 +65,13 @@
         
         [self assetsGroups];
         
-        // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.f) {
-            [self loadAssetsGroups];
-        }
+        // added by springox(20150719)
+        [self registerForNotifications];
+        
+        //// avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+        //if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 6.f) {
+        //    [self loadAssetsGroups];
+        //}
     }
     
     return self;
@@ -88,10 +97,10 @@
     }
     self.title = NSLocalizedStringWithDefaultValue(@"AGIPC.Albums", nil, [NSBundle mainBundle], @"Albums", nil);
     
-    // avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.f) {
-        [self loadAssetsGroups];
-    }
+    //// avoid deadlock on ios5, delay to handle in viewDidLoad, springox(20140612)
+    //if ([[[UIDevice currentDevice] systemVersion] floatValue] < 6.f) {
+    //    [self loadAssetsGroups];
+    //}
     
     // Navigation Bar Items
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction:)];
@@ -227,8 +236,6 @@
 
 - (void)loadAssetsGroups
 {
-    [self reloadData];
-    
     /*
     __ag_weak AGIPCAlbumsController *weakSelf = self;
     
@@ -295,7 +302,33 @@
 
 - (void)cancelAction:(id)sender
 {
-    [self.imagePickerController performSelector:@selector(didCancelPickingAssets)];
+    if ([self.imagePickerController respondsToSelector:@selector(didCancelPickingAssets)]) {
+        [self.imagePickerController performSelector:@selector(didCancelPickingAssets)];
+    }
+}
+
+#pragma mark - Notifications
+
+- (void)registerForNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didChangeLibrary:)
+                                                 name:ALAssetsLibraryChangedNotification
+                                               object:[AGImagePickerController defaultAssetsLibrary]];
+}
+
+- (void)unregisterFromNotifications
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:ALAssetsLibraryChangedNotification
+                                                  object:[AGImagePickerController defaultAssetsLibrary]];
+}
+
+- (void)didChangeLibrary:(NSNotification *)notification
+{
+    if ([self.imagePickerController respondsToSelector:@selector(loadAssetsGroupList)]) {
+        [self.imagePickerController loadAssetsGroupList];
+    }
 }
 
 @end

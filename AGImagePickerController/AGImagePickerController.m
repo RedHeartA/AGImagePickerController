@@ -25,10 +25,6 @@ static AGImagePickerController *_sharedInstance = nil;
 - (void)didCancelPickingAssets;
 - (void)didFail:(NSError *)error;
 
-// added by springox(20150719)
-- (void)registerForNotifications;
-- (void)unregisterFromNotifications;
-
 @end
 
 @implementation AGImagePickerController
@@ -136,8 +132,7 @@ static AGImagePickerController *_sharedInstance = nil;
 
 - (void)dealloc
 {
-    // added by springox(20150719)
-    [self unregisterFromNotifications];
+    // do nothing
 }
 
 - (id)init
@@ -187,9 +182,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
         self.didFinishBlock = successBlock;
         
         self.viewControllers = @[[[AGIPCAlbumsController alloc] initWithImagePickerController:self]];
-        
-        // added by springox(20150719)
-        [self registerForNotifications];
     }
     
     return self;
@@ -222,7 +214,9 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
                     // optimize the sort algorithm by springox(20140327)
                     int groupType = [[group valueForProperty:ALAssetsGroupPropertyType] intValue];
                     if (weakSelf.shouldShowSavedPhotosOnTop && groupType == ALAssetsGroupSavedPhotos) {
-                        [weakSelf.assetsGroupList insertObject:group atIndex:0];
+                        if (![weakSelf.assetsGroupList containsObject:group]) {
+                            [weakSelf.assetsGroupList insertObject:group atIndex:0];
+                        }
                     } else {
                         NSUInteger index = 0;
                         for (ALAssetsGroup *g in [NSArray arrayWithArray:weakSelf.assetsGroupList]) {
@@ -231,7 +225,9 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
                                 continue;
                             }
                             if (groupType > [[g valueForProperty:ALAssetsGroupPropertyType] intValue]) {
-                                [weakSelf.assetsGroupList insertObject:group atIndex:index];
+                                if (![weakSelf.assetsGroupList containsObject:group]) {
+                                    [weakSelf.assetsGroupList insertObject:group atIndex:index];
+                                }
                                 break;
                             }
                             index++;
@@ -243,10 +239,12 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[weakSelf.viewControllers firstObject];
-                    if ([albumsCtl respondsToSelector:@selector(updateAssetsGroupList:)]) {
-                        [albumsCtl updateAssetsGroupList:weakSelf.assetsGroupList];
+                    @synchronized(weakSelf) {
+                        NSLog(@"load assets group list finished %@", weakSelf.assetsGroupList);
+                        AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[weakSelf.viewControllers firstObject];
+                        if ([albumsCtl respondsToSelector:@selector(updateAssetsGroupList:)]) {
+                            [albumsCtl updateAssetsGroupList:weakSelf.assetsGroupList];
+                        }
                     }
                 });
             };
@@ -262,30 +260,35 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     });
 }
 
+// Support use name to show asset list which you need.
 - (void)showAssetsControllerWithName:(NSString *)name
 {
     // added by springox(20150719)
     if (0 == [self.assetsGroupList count]) {
         [self loadAssetsGroupList];
+    } else {
+        // just for assets group list update every time, keep the newest version springox(20150720)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self loadAssetsGroupList];
+        });
     }
     
     AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
-    if ([albumsCtl respondsToSelector:@selector(pushAssetsControllerWithName:)]) {
-        [albumsCtl pushAssetsControllerWithName:name];
+    if (0 == [name length]) {
+        if ([albumsCtl respondsToSelector:@selector(pushFirstAssetsController)]) {
+            [albumsCtl pushFirstAssetsController];
+        }
+    } else {
+        if ([albumsCtl respondsToSelector:@selector(pushAssetsControllerWithName:)]) {
+            [albumsCtl pushAssetsControllerWithName:name];
+        }
     }
 }
 
+// Support auto show first asset list.
 - (void)showFirstAssetsController
 {
-    // added by springox(20150719)
-    if (0 == [self.assetsGroupList count]) {
-        [self loadAssetsGroupList];
-    }
-    
-    AGIPCAlbumsController *albumsCtl = (AGIPCAlbumsController *)[self.viewControllers firstObject];
-    if ([albumsCtl respondsToSelector:@selector(pushFirstAssetsController)]) {
-        [albumsCtl pushFirstAssetsController];
-    }
+    [self showAssetsControllerWithName:nil];
 }
 
 #pragma mark - View lifecycle
@@ -299,8 +302,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
 
 - (void)didFinishPickingAssets:(NSArray *)selectedAssets
 {
-    //[self popToRootViewControllerAnimated:NO];
-    
     self.userIsDenied = NO;
     
     // Reset the number of selections
@@ -347,28 +348,6 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     {
 		[self.delegate performSelector:@selector(agImagePickerController:didFail:) withObject:self withObject:error];
 	}
-}
-
-#pragma mark - Notifications
-
-- (void)registerForNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(didChangeLibrary:)
-                                                 name:ALAssetsLibraryChangedNotification
-                                               object:[AGImagePickerController defaultAssetsLibrary]];
-}
-
-- (void)unregisterFromNotifications
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:ALAssetsLibraryChangedNotification
-                                                  object:[AGImagePickerController defaultAssetsLibrary]];
-}
-
-- (void)didChangeLibrary:(NSNotification *)notification
-{
-    [self loadAssetsGroupList];
 }
 
 @end

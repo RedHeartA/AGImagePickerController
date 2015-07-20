@@ -101,12 +101,15 @@ toolbarItemsForManagingTheSelection:(NSArray *)toolbarItemsForManagingTheSelecti
 andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop;
 
 // Before show ablums view, you need invoke this method, the sooner the better.
-// For example:application:didFinishLaunchingWithOptions: in AppDelegate springox(20150719)
+// For Example: invoke in application:didFinishLaunchingWithOptions of AppDelegate springox(20150719)
 - (void)ready;
+
+- (void)loadAssetsGroupList;
 
 // Support use name to show asset list which you need. springox(20150719)
 - (void)showAssetsControllerWithName:(NSString *)name;
 
+// Support auto show first asset list. springox(20150719)
 - (void)showFirstAssetsController;
 
 @end
