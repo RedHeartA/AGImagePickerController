@@ -15,11 +15,12 @@ AGImagePickerController是一个图片选择器，支持图片多选，支持大
 ### Usage(用法)
 
 ``` objective-c
-        self.selectedPhotos = [NSMutableArray array];
-        
         __block AGViewController *blockSelf = self;
         
         ipc = [AGImagePickerController sharedInstance:self];
+        // Before show ablums view, you need invoke this method, the sooner the better.
+        // For Example: invoke in application:didFinishLaunchingWithOptions of AppDelegate springox(20150719)
+        [ipc ready];
         
         ipc.didFailBlock = ^(NSError *error) {
             NSLog(@"Fail. Error: %@", error);
@@ -50,9 +51,6 @@ AGImagePickerController是一个图片选择器，支持图片多选，支持大
             
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
         };
-        
-        // Before show ablums view, you need invoke this method, the sooner the better.
-        [ipc ready];
 ```
 
 ## Contact(联系)
