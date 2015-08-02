@@ -15,40 +15,40 @@ AGImagePickerController是一个图片选择器，支持图片多选，支持大
 ### Usage(用法)
 
 ``` objective-c
-        self.selectedPhotos = [NSMutableArray array];
+    self.selectedPhotos = [NSMutableArray array];
+    
+    __block AGViewController *blockSelf = self;
+    
+    ipc = [AGImagePickerController sharedInstance:self];
+    ipc.didFailBlock = ^(NSError *error) {
+        NSLog(@"Fail. Error: %@", error);
         
-        __block AGViewController *blockSelf = self;
-        
-        ipc = [AGImagePickerController sharedInstance:self];
-        ipc.didFailBlock = ^(NSError *error) {
-            NSLog(@"Fail. Error: %@", error);
+        if (error == nil) {
+            [blockSelf.selectedPhotos removeAllObjects];
+            NSLog(@"User has cancelled.");
             
-            if (error == nil) {
-                [blockSelf.selectedPhotos removeAllObjects];
-                NSLog(@"User has cancelled.");
-                
-                [blockSelf dismissModalViewControllerAnimated:YES];
-            } else {
-                
-                // We need to wait for the view controller to appear first.
-                double delayInSeconds = 0.5;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [blockSelf dismissModalViewControllerAnimated:YES];
-                });
-            }
-            
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-            
-        };
-        ipc.didFinishBlock = ^(NSArray *info) {
-            [blockSelf.selectedPhotos setArray:info];
-            
-            NSLog(@"Info: %@", info);
             [blockSelf dismissModalViewControllerAnimated:YES];
+        } else {
             
-            [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
-        };
+            // We need to wait for the view controller to appear first.
+            double delayInSeconds = 0.5;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [blockSelf dismissModalViewControllerAnimated:YES];
+            });
+        }
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+        
+    };
+    ipc.didFinishBlock = ^(NSArray *info) {
+        [blockSelf.selectedPhotos setArray:info];
+        
+        NSLog(@"Info: %@", info);
+        [blockSelf dismissModalViewControllerAnimated:YES];
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
+    };
 ```
 
 ## Contact(联系)
