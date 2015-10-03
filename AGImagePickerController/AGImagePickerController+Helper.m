@@ -138,7 +138,7 @@
     
     x = (width - (self.numberOfItemsPerRow * AGIPC_ITEM_SIZE.width)) / (self.numberOfItemsPerRow + 1);
     y = x;
-    return CGPointMake(x, y);
+    return CGPointMake(floor(x), floor(y));
 }
 
 #pragma mark - Drawing: Checkmark
