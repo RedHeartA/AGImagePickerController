@@ -118,9 +118,9 @@
 - (CGRect)itemRect
 {
     CGPoint topLeftPoint = self.itemTopLeftPoint;
-    CGSize size = AGIPC_ITEM_SIZE;
+    CGSize sizeOfItem = self.itemSize;
     
-    return CGRectMake(topLeftPoint.x, topLeftPoint.y, size.width, size.height);
+    return CGRectMake(topLeftPoint.x, topLeftPoint.y, sizeOfItem.width, sizeOfItem.height);
 }
 
 - (CGPoint)itemTopLeftPoint
@@ -136,9 +136,36 @@
     
     CGFloat x = 0, y = 0;
     
-    x = (width - (self.numberOfItemsPerRow * AGIPC_ITEM_SIZE.width)) / (self.numberOfItemsPerRow + 1);
+    x = (width - (self.numberOfItemsPerRow * self.itemSize.width)) / (self.numberOfItemsPerRow + 1);
     y = x;
     return CGPointMake(floor(x), floor(y));
+}
+
+- (CGSize)itemSize
+{
+    static CGSize _gSize;
+    if (0 == _gSize.width || 0 == _gSize.height) {
+        if (AGDeviceTypeiPad == self.deviceType) {
+            _gSize = AGIPC_ITEM_SIZE_PAD;
+            _gSize.width = _gSize.width*(self.screenWidth/768);
+            _gSize.height = _gSize.width;
+        } else {
+            _gSize = AGIPC_ITEM_SIZE;
+            _gSize.width = _gSize.width*(self.screenWidth/320);
+            _gSize.height = _gSize.width;
+        }
+    }
+    return _gSize;
+}
+
+- (CGFloat)screenWidth
+{
+    static CGFloat screenWidth = 0;
+    if (0 == screenWidth) {
+        CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+        screenWidth = fmin(screenSize.width, screenSize.height);
+    }
+    return screenWidth;
 }
 
 #pragma mark - Drawing: Checkmark
