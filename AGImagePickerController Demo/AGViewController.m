@@ -42,14 +42,14 @@
                 [blockSelf.selectedPhotos removeAllObjects];
                 NSLog(@"User has cancelled.");
                 
-                [blockSelf dismissModalViewControllerAnimated:YES];
+                [blockSelf dismissViewControllerAnimated:YES completion:NULL];
             } else {
                 
                 // We need to wait for the view controller to appear first.
                 double delayInSeconds = 0.5;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                    [blockSelf dismissModalViewControllerAnimated:YES];
+                    [blockSelf dismissViewControllerAnimated:YES completion:NULL];
                 });
             }
             
@@ -60,7 +60,7 @@
             [blockSelf.selectedPhotos setArray:info];
             
             NSLog(@"Info: %@", info);
-            [blockSelf dismissModalViewControllerAnimated:YES];
+            [blockSelf dismissViewControllerAnimated:YES completion:NULL];
             
             [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:YES];
         };
@@ -98,7 +98,7 @@
     return YES;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskAll;
 }
@@ -111,7 +111,7 @@
     ipc.shouldShowSavedPhotosOnTop = NO;
     ipc.shouldChangeStatusBarStyle = YES;
     ipc.selection = self.selectedPhotos;
-    ipc.maximumNumberOfPhotosToBeSelected = 10;
+    ipc.maximumNumberOfPhotosToBeSelected = 9;
     
     // Custom toolbar items
     AGIPCToolbarItem *selectAll = [[AGIPCToolbarItem alloc] initWithBarButtonItem:[[UIBarButtonItem alloc] initWithTitle:@"+ Select All" style:UIBarButtonItemStyleBordered target:nil action:nil] andSelectionBlock:^BOOL(NSUInteger index, ALAsset *asset) {
@@ -126,7 +126,7 @@
     }];  
     ipc.toolbarItemsForManagingTheSelection = @[selectAll, flexible, selectOdd, flexible, deselectAll];
 
-    [self presentModalViewController:ipc animated:YES];
+    [self presentViewController:ipc animated:YES completion:NULL];
     
     // Show first assets list, modified by springox(20140503)
     [ipc showFirstAssetsController];

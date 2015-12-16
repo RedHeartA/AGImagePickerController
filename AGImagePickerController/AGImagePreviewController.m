@@ -31,6 +31,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = [UIColor blackColor];
+    
     if (nil == _imageView) {
         _imageView = [[UIImageView alloc] initWithImage:_image];
     }
@@ -97,7 +99,7 @@
     if (nil != self.navigationController && 1 < [self.navigationController.viewControllers count]) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:NULL];
     }
 }
 

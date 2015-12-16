@@ -44,6 +44,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.view.backgroundColor = [UIColor blackColor];
+    
     [self setBottomView];
     [self setScrollView];
 }
@@ -149,6 +151,7 @@
         _preScrollView.bounces = NO;
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapGestureRecognizer)];
         [_preScrollView addGestureRecognizer:tapGesture];
+        _preScrollView.backgroundColor = self.view.backgroundColor;
     }
     [self.view insertSubview:_preScrollView belowSubview:_bottomBgView];
 }
@@ -179,7 +182,7 @@
     if (nil != self.navigationController && 1 < [self.navigationController.viewControllers count]) {
         [self.navigationController popViewControllerAnimated:YES];
     } else {
-        [self dismissModalViewControllerAnimated:YES];
+        [self dismissViewControllerAnimated:YES completion:NULL];
     }
 }
 
@@ -195,9 +198,7 @@
     UIImage *image = [UIImage imageWithCGImage:asset.defaultRepresentation.fullScreenImage];
     AGImagePreviewController *preController = [[AGImagePreviewController alloc] initWithImage:image];
     preController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self presentViewController:preController animated:YES completion:^{
-        // do nothing
-    }];
+    [self presentViewController:preController animated:YES completion:NULL];
 }
 
 - (void)didPressBottomRightButtonAction:(id)sender

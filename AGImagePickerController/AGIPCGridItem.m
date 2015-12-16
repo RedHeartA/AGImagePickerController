@@ -147,22 +147,23 @@ static NSUInteger numberOfSelectedGridItems = 0;
         CGRect checkmarkFrame = [self.imagePickerController checkmarkFrameUsingItemFrame:frame];
         
         self.thumbnailImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-
 		[self addSubview:self.thumbnailImageView];
         
         //self.selectionView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-
         //[self addSubview:self.selectionView];
         
         //self.checkmarkImageView = [[UIImageView alloc] initWithFrame:checkmarkFrame];
         self.checkmarkImageView = [[UIButton alloc] initWithFrame:checkmarkFrame];
-        
         [self addSubview:self.checkmarkImageView];
         
         // 多增加对打钩的tap手势响应，springox(20140520)
         [self.checkmarkImageView addTarget:self action:@selector(tapCheckMark) forControlEvents:UIControlEventTouchUpInside];
         
         self.asset = asset;
+        
+        // added by springox(20151216)
+        self.thumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.thumbnailImageView.clipsToBounds = YES;
     }
     
     return self;
@@ -172,8 +173,6 @@ static NSUInteger numberOfSelectedGridItems = 0;
 {
     [super layoutSubviews];
     
-    self.thumbnailImageView.contentMode = UIViewContentModeScaleToFill;
-
     //self.selectionView.backgroundColor = [UIColor whiteColor];
     //self.selectionView.alpha = .5f;
     //self.selectionView.hidden = !self.selected;
@@ -193,7 +192,9 @@ static NSUInteger numberOfSelectedGridItems = 0;
 // Drawing must be exectued in main thread. springox(20131218)
 - (void)loadImageFromAsset
 {
-    self.thumbnailImageView.image = [UIImage imageWithCGImage:_asset.thumbnail];
+    // modified by springox(20151216)
+    //self.thumbnailImageView.image = [UIImage imageWithCGImage:_asset.thumbnail];
+    self.thumbnailImageView.image = [UIImage imageWithCGImage:_asset.aspectRatioThumbnail];
     if ([self.imagePickerController.selection containsObject:self]) {
         self.selected = YES;
     }
