@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "AGImagePickerController"
-  s.version      = "3.0.0"
+  s.version      = "3.0.1"
   s.summary      = "AGImagePickerController is a image picker controller that allows you to select multiple photos and can be used for all iOS devices."
   s.homepage     = "https://github.com/SpringOx/AGImagePickerController"
   s.license      = 'MIT'
