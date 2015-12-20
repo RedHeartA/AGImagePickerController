@@ -230,7 +230,7 @@ static NSUInteger numberOfSelectedGridItems = 0;
     }
 }
 
-#pragma mark - Private
+//#pragma mark - Private
 
 + (void)resetNumberOfSelections
 {

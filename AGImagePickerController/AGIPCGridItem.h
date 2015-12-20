@@ -46,6 +46,8 @@
 
 - (void)tap:(id)sender;
 
++ (void)resetNumberOfSelections;
+
 + (NSUInteger)numberOfSelections;
 
 @end

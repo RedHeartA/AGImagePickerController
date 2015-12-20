@@ -104,6 +104,12 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop;
 // Support auto show first asset list. springox(20150719)
 - (void)showFirstAssetsController;
 
+- (void)didFinishPickingAssets:(NSArray *)selectedAssets;
+
+- (void)didCancelPickingAssets;
+
+- (void)didFail:(NSError *)error;
+
 @end
 
 

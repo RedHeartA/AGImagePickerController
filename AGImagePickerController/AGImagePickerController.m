@@ -205,7 +205,7 @@ andShouldShowSavedPhotosOnTop:(BOOL)shouldShowSavedPhotosOnTop
     return UIInterfaceOrientationMaskAll;
 }
 
-#pragma mark - Private
+//#pragma mark - Private
 
 - (void)didFinishPickingAssets:(NSArray *)selectedAssets
 {
